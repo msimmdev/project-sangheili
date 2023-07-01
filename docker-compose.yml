@@ -2,13 +2,13 @@ services:
   app:
     image: "node:20"
     user: "node"
-    working_dir: /api
+    working_dir: /home/node/api
     ports:
       - 127.0.0.1:3000:3000
     environment:
       - NODE_ENV=production
     volumes:
-      - ./:/api
+      - ./api:/home/node/api
     expose:
       - "3000"
     command:
