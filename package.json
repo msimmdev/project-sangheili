@@ -1,0 +1,22 @@
+{
+  "name": "the-free-cookbook",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msimmdev/the-free-cookbook.git"
+  },
+  "author": "Michael Simm",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/msimmdev/the-free-cookbook/issues"
+  },
+  "homepage": "https://github.com/msimmdev/the-free-cookbook#readme",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
