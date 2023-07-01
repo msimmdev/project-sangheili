@@ -11,8 +11,7 @@ services:
       - ./api:/home/node/api
     expose:
       - "3000"
-    command:
-      "npm start"
+    command: npm run dev
   mongo:
     image: mongo
     restart: always
