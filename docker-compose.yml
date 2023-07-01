@@ -1,0 +1,21 @@
+services:
+  app:
+    image: "node:20"
+    user: "node"
+    working_dir: /api
+    ports:
+      - 127.0.0.1:3000:3000
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/api
+    expose:
+      - "3000"
+    command:
+      "npm start"
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
