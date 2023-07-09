@@ -2,17 +2,26 @@ services:
   app:
     image: "node:20"
     user: "node"
-    working_dir: /home/node/app
+    working_dir: /home/node
     ports:
       - 127.0.0.1:3000:3000
     environment:
       NODE_ENV: development
       MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
     volumes:
-      - ./app:/home/node/app
+      - ./app:/home/node/devapp
     expose:
       - "3000"
-    command: sh -c "npm ci && npm run dev"
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        mkdir app
+        cd app
+        cp /home/node/devapp/*.json /home/node/app/
+        ln -s /home/node/devapp/src ./src
+        npm ci
+        npm run dev
   mongo:
     image: mongo
     restart: always
