@@ -1,20 +1,23 @@
 import express, { Request, Response } from 'express';
+import { Eta } from 'eta';
+import path from 'path';
+import router from "./routes";
 
 const app = express();
 const port = 3000;
-const mongoUri = process.env.MONGO_CONNECTION_STRING;
+const viewpath = path.join(__dirname, "views");
+const eta = new Eta({ views: "/", debug: true, cache: true });
 
-console.log(mongoUri);
+app.engine("eta", (filePath, options, callback) => {
+  const rendered = eta.render(filePath, options);
+  return callback(null, rendered);
+});
 
-if (typeof mongoUri === "string") {
+app.set("views", viewpath);
+app.set("view engine", "eta");
 
-  app.get('/', async (req: Request, res: Response) => {
-    res.send([]);
-  })
+app.use("/", router);
 
-  app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
-  })
-} else {
-  throw new Error("Undefined environment variable MONGO_CONNECTION_STRING");
-}
+app.listen(port, () => {
+  console.log(`App listening on port ${port}`)
+})
