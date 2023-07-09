@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= it.title %> - The Free Cookbook</title>
+  <link rel='stylesheet' type='text/css' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <div class='header-bar'>
+    <header class='container'>
+      <div class='header-title'>
+        The Free Cookbook
+      </div>
+      <div class='header-search'>
+        Search
+      </div>
+      <div class='header-widgets'>
+        Widgets
+      </div>
+    </header>
+  </div>
+  <main class='container'>
+    <%~ it.body %>
+  </main>
+  <div class='footer-bar'>
+    <footer class='container'>
+      This is a footer
+    </footer>
+  </div>
+</body>
+
+</html>
