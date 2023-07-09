@@ -1,32 +1,18 @@
 services:
-  api:
+  app:
     image: "node:20"
     user: "node"
-    working_dir: /home/node/api
+    working_dir: /home/node/app
     ports:
       - 127.0.0.1:3000:3000
     environment:
       NODE_ENV: development
-      MONGO_USERNAME: root
-      MONGO_PASSWORD: example
+      MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
     volumes:
-      - ./api:/home/node/api
+      - ./app:/home/node/app
     expose:
       - "3000"
-    command: npm run dev
-  client:
-    image: "node:20"
-    user: "node"
-    working_dir: /home/node/client
-    ports:
-      - 127.0.0.1:5173:5173
-    environment:
-      NODE_ENV: development
-    volumes:
-      - ./client:/home/node/client
-    expose:
-      - "5173"
-    command: npm run dev
+    command: sh -c "npm ci && npm run dev"
   mongo:
     image: mongo
     restart: always
