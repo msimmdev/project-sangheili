@@ -1,8 +1,8 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 const router = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.render("index", { name: "Michael" });
+router.get("/", async (req: Request, res: Response) => {
+  await res.render("index", { name: "Michael", title: "WoHoo!" });
 });
 
 export default router;

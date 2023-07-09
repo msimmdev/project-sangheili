@@ -1,1 +1,3 @@
-Hi There <%= it.name %>!
+<% layout('layouts/root') %>
+
+<p> Hi <%= it.name %>!</p>
