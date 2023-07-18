@@ -3,6 +3,7 @@
 
 <head>
   <title><%= it.title %> - The Free Cookbook</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200' />
   <link rel='stylesheet' type='text/css' href='/stylesheets/style.css' />
   <meta name='description' content='Free recipes and guides for all culinary needs' />
   <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -15,7 +16,14 @@
         The Free Cookbook
       </div>
       <div class='header-search'>
-        Search
+        <form action='/search' method='GET' role='search' autocomplete='off' class='search-form'>
+          <input type='text' placeholder='Search...' name='p' />
+          <button>
+            <span class='material-symbols-outlined'>
+              search
+            </span>
+          </button>
+        </form>
       </div>
       <div class='header-widgets'>
         Widgets

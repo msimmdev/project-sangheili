@@ -5,7 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "test": "jest",
-    "build": "rimraf dist/ && npx tsc && copyfiles -u 1 src/views/* src/views/**/* dist && node-sass src/stylesheets/ -o dist/public/stylesheets/",
+    "build": "rimraf dist/ && npx tsc && copyfiles -u 1 src/views/* src/views/**/* dist && node-sass src/stylesheets/style.sass -o dist/public/stylesheets/",
     "start": "npm run build && node dist/app.js",
     "dev": "nodemon"
   },

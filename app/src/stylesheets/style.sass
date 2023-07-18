@@ -1,9 +1,15 @@
+$content-background-color: #FAFAFA
+$primary-background-color: #FFFFFF
+$border-color: #D5D5DB
+$button-color: #F5F5F5
+$button-color-hover: #F0F0F0
+
 body
   margin: 0
   min-height: 100vh
   display: flex
   flex-direction: column
-  background-color: #FAFAFA
+  background-color: $content-background-color
 main
   flex: 1
 .container
@@ -11,8 +17,8 @@ main
   margin-right: auto
   margin-left: auto
 .header-bar
-  background-color: #FFFFFF
-  border-bottom: 1px solid #D5D5DB
+  background-color: $primary-background-color
+  border-bottom: 1px solid $border-color
   height: 4rem
 header
   display: flex
@@ -28,3 +34,38 @@ p
   font-size: 1.125rem
   font-family: Helvetica, Arial, sans-serif
   line-height: 2rem
+
+.header-search
+  flex-grow: 3
+  .search-form
+    display: flex
+    justify-content: center
+    padding: 20px
+    width: 80%
+    input
+      padding: 10px
+      border:
+        top: 1px solid $border-color
+        left: 1px solid $border-color
+        bottom: 1px solid $border-color
+        right: none
+      outline: none
+      border-radius: 5px 0 0 5px
+      width: 50%
+      font-size: 1rem
+    button
+      padding: 10px
+      border:
+        top: 1px solid $border-color
+        left: 1px solid $border-color
+        bottom: 1px solid $border-color
+        right: 1px solid $border-color
+      outline: none
+      cursor: pointer
+      border-radius: 0 5px 5px 0
+      background-color: $button-color
+      &:hover
+        background-color: $button-color-hover
+
+.material-symbols-outlined
+  font-variation-settings: FILL 0,wght 400,GRAD 0,opsz 48
