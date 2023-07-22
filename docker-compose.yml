@@ -47,7 +47,7 @@ services:
         ln -s /home/node/devapp/src ./src
         ln -s /home/node/devapp/public ./public
         npm ci
-        npm run dev
+        npm run dev -- --port 3001 --strictPort --host
   mongo:
     image: mongo
     restart: always
