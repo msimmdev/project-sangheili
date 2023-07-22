@@ -12,7 +12,7 @@ services:
       - ./app:/home/node/devapp
     expose:
       - "3000"
-    command: 
+    command:
       - /bin/sh
       - -c
       - |
@@ -20,6 +20,32 @@ services:
         cd app
         cp /home/node/devapp/*.json /home/node/app/
         ln -s /home/node/devapp/src ./src
+        npm ci
+        npm run dev
+  manageApp:
+    image: "node:20"
+    user: "node"
+    working_dir: /home/node
+    ports:
+      - 127.0.0.1:3001:3001
+    environment:
+      NODE_ENV: development
+      MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
+    volumes:
+      - ./manageApp:/home/node/devapp
+    expose:
+      - "3001"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mkdir app
+        cd app
+        cp /home/node/devapp/*.json /home/node/app/
+        cp /home/node/devapp/*.html /home/node/app/
+        cp /home/node/devapp/*.ts /home/node/app/
+        ln -s /home/node/devapp/src ./src
+        ln -s /home/node/devapp/public ./public
         npm ci
         npm run dev
   mongo:
