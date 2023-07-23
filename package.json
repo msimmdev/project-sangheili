@@ -1,0 +1,8 @@
+{
+  "name": "@msimmdev/project-sangheili",
+  "workspaces": [
+    "app",
+    "manageApp",
+    "shared"
+  ]
+}

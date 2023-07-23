@@ -1,5 +1,5 @@
 {
-  "name": "the-free-cookbook",
+  "name": "@msimmdev/project-sangheili-app",
   "version": "0.1.0",
   "description": "",
   "main": "dist/app.js",
@@ -33,6 +33,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@msimmdev/project-sangheili-shared": "^0.1.0",
     "eta": "^3.0.3",
     "express": "^4.18.2"
   }
