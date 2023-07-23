@@ -3,6 +3,6 @@
   "workspaces": [
     "app",
     "manageApp",
-    "shared"
+    "types"
   ]
 }

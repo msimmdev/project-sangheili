@@ -17,7 +17,6 @@ app.set("views", viewpath);
 app.set("view engine", "eta");
 
 app.use("/", router);
-console.log(path.join(__dirname, "public"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.listen(port, () => {
