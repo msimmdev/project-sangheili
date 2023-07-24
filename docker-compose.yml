@@ -9,19 +9,22 @@ services:
       NODE_ENV: development
       MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
     volumes:
-      - ./app:/home/node/devapp
+      - ./:/home/node/devapp
     expose:
       - "3000"
     command:
       - /bin/sh
       - -c
       - |
+        cp /home/node/devapp/*.json /home/node/
+        mkdir types
+        cp /home/node/devapp/types/*.json /home/node/types/
+        ln -s /home/node/devapp/types/src ./types/src
         mkdir app
-        cd app
-        cp /home/node/devapp/*.json /home/node/app/
-        ln -s /home/node/devapp/src ./src
+        cp /home/node/devapp/app/*.json /home/node/app/
+        ln -s /home/node/devapp/app/src ./app/src
         npm ci
-        npm run dev
+        npm run dev -w app
   manageApp:
     image: "node:20"
     user: "node"
@@ -32,22 +35,25 @@ services:
       NODE_ENV: development
       MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
     volumes:
-      - ./manageApp:/home/node/devapp
+      - ./:/home/node/devapp
     expose:
       - "3001"
     command:
       - /bin/sh
       - -c
       - |
-        mkdir app
-        cd app
-        cp /home/node/devapp/*.json /home/node/app/
-        cp /home/node/devapp/*.html /home/node/app/
-        cp /home/node/devapp/*.ts /home/node/app/
-        ln -s /home/node/devapp/src ./src
-        ln -s /home/node/devapp/public ./public
+        cp /home/node/devapp/*.json /home/node/
+        mkdir types
+        cp /home/node/devapp/types/*.json /home/node/types/
+        ln -s /home/node/devapp/types/src ./types/src
+        mkdir manageApp
+        cp /home/node/devapp/manageApp/*.json /home/node/manageApp/
+        cp /home/node/devapp/manageApp/*.html /home/node/manageApp/
+        cp /home/node/devapp/manageApp/*.ts /home/node/manageApp/
+        ln -s /home/node/devapp/manageApp/src ./manageApp/src
+        ln -s /home/node/devapp/manageApp/public ./manageApp/public
         npm ci
-        npm run dev -- --port 3001 --strictPort --host
+        npm run dev -w manageApp -- --port 3001 --strictPort --host
   mongo:
     image: mongo
     restart: always
