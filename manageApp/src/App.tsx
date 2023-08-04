@@ -7,6 +7,12 @@ import Footer from "./Footer";
 function App() {
   const { isLoading, isAuthenticated, error, loginWithRedirect } = useAuth0();
 
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      loginWithRedirect();
+    }
+  }, [isAuthenticated, isLoading]);
+
   if (isLoading) {
     return <p>Loading</p>;
   }
@@ -14,12 +20,6 @@ function App() {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      loginWithRedirect();
-    }
-  }, [isAuthenticated, isLoading]);
 
   if (isAuthenticated) {
     return (
