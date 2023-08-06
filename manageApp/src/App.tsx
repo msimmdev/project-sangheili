@@ -1,17 +1,17 @@
 import { Outlet } from "react-router-dom";
-import { useAuth } from "react-oidc-context";
+import { useAuth, hasAuthParams } from "react-oidc-context";
 import { useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
 function App() {
-  const { isLoading, isAuthenticated, error, signinRedirect } = useAuth();
+  const { isLoading, isAuthenticated, error, activeNavigator, signinRedirect } =
+    useAuth();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!hasAuthParams() && !isAuthenticated && !activeNavigator && !isLoading)
       signinRedirect();
-    }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, activeNavigator, isLoading, signinRedirect]);
 
   if (isLoading) {
     return <p>Loading</p>;
