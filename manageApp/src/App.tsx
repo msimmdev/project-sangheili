@@ -1,15 +1,15 @@
 import { Outlet } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "react-oidc-context";
 import { useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
 function App() {
-  const { isLoading, isAuthenticated, error, loginWithRedirect } = useAuth0();
+  const { isLoading, isAuthenticated, error, signinRedirect } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      loginWithRedirect();
+      signinRedirect();
     }
   }, [isAuthenticated, isLoading]);
 

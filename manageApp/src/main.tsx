@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { AuthProvider } from "react-oidc-context";
 import routes from "./routes";
 import App from "./App.tsx";
 import "./index.css";
@@ -15,15 +15,13 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Auth0Provider
-    domain={import.meta.env.VITE_AUTH0_DOMAIN || ""}
-    clientId={import.meta.env.VITE_AUTH0_CLIENTID || ""}
-    authorizationParams={{
-      redirect_uri: window.location.origin,
-    }}
+  <AuthProvider
+    authority={import.meta.env.VITE_AUTH_AUTHORITY}
+    client_id={import.meta.env.VITE_AUTH_CLIENTID}
+    redirect_uri={import.meta.env.VITE_AUTH_REDIRECT}
   >
     <React.StrictMode>
       <RouterProvider router={router} />
     </React.StrictMode>
-  </Auth0Provider>
+  </AuthProvider>
 );
