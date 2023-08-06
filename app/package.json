@@ -33,7 +33,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@msimmdev/project-sangheili-shared": "^0.1.0",
+    "@msimmdev/project-sangheili-types": "^0.1.0",
     "eta": "^3.0.3",
     "express": "^4.18.2"
   }

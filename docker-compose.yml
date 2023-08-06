@@ -7,7 +7,7 @@ services:
       - 127.0.0.1:3000:3000
     environment:
       NODE_ENV: development
-      MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
+      MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo-1:27017/sangheili
     volumes:
       - ./:/home/node/devapp
     expose:
@@ -30,14 +30,13 @@ services:
     user: "node"
     working_dir: /home/node
     ports:
-      - 127.0.0.1:3001:3001
+      - 127.0.0.1:5173:5173
     environment:
       NODE_ENV: development
-      MONGO_CONNECTION_STRING: mongodb://root:example@the-free-cookbook-mongo-1:27017/test
     volumes:
       - ./:/home/node/devapp
     expose:
-      - "3001"
+      - "5173"
     command:
       - /bin/sh
       - -c
@@ -53,7 +52,34 @@ services:
         ln -s /home/node/devapp/manageApp/src ./manageApp/src
         ln -s /home/node/devapp/manageApp/public ./manageApp/public
         npm ci
-        npm run dev -w manageApp -- --port 3001 --strictPort --host
+        npm run dev -w manageApp -- --port 5173 --strictPort --host
+  api-crud:
+    image: "node:20"
+    user: "node"
+    working_dir: /home/node
+    ports:
+      - 127.0.0.1:3100:3100
+    environment:
+      NODE_ENV: development
+      MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo-1:27017/sangheili
+    volumes:
+      - ./:/home/node/devapp
+    expose:
+      - "3100"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cp /home/node/devapp/*.json /home/node/
+        mkdir types
+        cp /home/node/devapp/types/*.json /home/node/types/
+        ln -s /home/node/devapp/types/src ./types/src
+        mkdir api
+        mkdir api/crud
+        cp /home/node/devapp/api/crud/*.json /home/node/api/crud/
+        ln -s /home/node/devapp/api/crud/src ./api/crud/src
+        npm ci
+        npm run dev -w api/crud
   mongo:
     image: mongo
     restart: always

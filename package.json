@@ -3,6 +3,7 @@
   "workspaces": [
     "app",
     "manageApp",
-    "types"
+    "types",
+    "api/crud"
   ]
 }
