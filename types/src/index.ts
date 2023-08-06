@@ -4,7 +4,7 @@ import RecipeIngredient from "./recipe-ingredient";
 import RecipeSection from "./recipe-section";
 import RecipeStep from "./recipe-step";
 import Dish from "./dish";
-import Media, { MediaType } from "./media";
+import Image from "./Image";
 
 export {
   Recipe,
@@ -13,6 +13,5 @@ export {
   RecipeSection,
   RecipeStep,
   Dish,
-  Media,
-  MediaType,
+  Image,
 };

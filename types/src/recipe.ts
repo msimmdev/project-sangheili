@@ -2,11 +2,11 @@ import { UUID } from "crypto";
 import { Duration } from "moment";
 import RecipeIngredient from "./recipe-ingredient";
 import RecipeSection from "./recipe-section";
-import Media from "./media";
 import RecipeSummary from "./recipe-summary";
+import Image from "./Image";
 
 enum RecipeType {
-  Default,
+  StandAlone,
   Variant,
   Remix,
 }
@@ -22,8 +22,8 @@ type Recipe = {
   totalTime: Duration | null;
   prepTime: Duration | null;
   cookTime: Duration | null;
-  media: Media[];
-  remixParent: RecipeSummary;
+  mainImage: Image | null;
+  remixParent: RecipeSummary | null;
   remixChildren: RecipeSummary[];
 };
 

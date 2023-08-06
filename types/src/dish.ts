@@ -1,13 +1,13 @@
 import { UUID } from "crypto";
-import Recipe from "./recipe";
-import Media from "./media";
+import Image from "./Image";
+import RecipeSummary from "./recipe-summary";
 
 type Dish = {
   id: UUID;
   name: string;
   description: string;
-  defaultRecipe: Recipe;
-  media: Media[];
+  defaultRecipe: RecipeSummary;
+  mainImage: Image;
 };
 
 export default Dish;
