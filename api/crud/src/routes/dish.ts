@@ -1,20 +1,15 @@
 import express, { Request, Response } from "express";
-import { useDB } from "../db";
+import { dishes } from "../db";
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
-  const newItem = req.body;
-  const { client, dishes } = useDB();
-  const data = await dishes.find();
-  await client.close();
-  res.status(200).json(data.toArray());
+  const data = await dishes.find({});
+  res.status(200).json(await data.toArray());
 });
 
 router.post("/", async (req: Request, res: Response) => {
   const newItem = req.body;
-  const { client, dishes } = useDB();
   await dishes.insertOne(newItem);
-  await client.close();
   res.status(200).end();
 });
 
