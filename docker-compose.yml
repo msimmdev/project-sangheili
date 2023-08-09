@@ -19,10 +19,10 @@ services:
         cp /home/node/devapp/*.json /home/node/
         mkdir types
         cp /home/node/devapp/types/*.json /home/node/types/
-        ln -s /home/node/devapp/types/src ./types/src
+        ln -Ts /home/node/devapp/types/src ./types/src
         mkdir app
         cp /home/node/devapp/app/*.json /home/node/app/
-        ln -s /home/node/devapp/app/src ./app/src
+        ln -Ts /home/node/devapp/app/src ./app/src
         npm ci
         npm run dev -w app
   manageApp:
@@ -44,13 +44,13 @@ services:
         cp /home/node/devapp/*.json /home/node/
         mkdir types
         cp /home/node/devapp/types/*.json /home/node/types/
-        ln -s /home/node/devapp/types/src ./types/src
+        ln -Ts /home/node/devapp/types/src ./types/src
         mkdir manageApp
         cp /home/node/devapp/manageApp/*.json /home/node/manageApp/
         cp /home/node/devapp/manageApp/*.html /home/node/manageApp/
         cp /home/node/devapp/manageApp/*.ts /home/node/manageApp/
-        ln -s /home/node/devapp/manageApp/src ./manageApp/src
-        ln -s /home/node/devapp/manageApp/public ./manageApp/public
+        ln -Ts /home/node/devapp/manageApp/src ./manageApp/src
+        ln -Ts /home/node/devapp/manageApp/public ./manageApp/public
         npm ci
         npm run dev -w manageApp -- --port 5173 --strictPort --host
   api-crud:
@@ -73,12 +73,13 @@ services:
         cp /home/node/devapp/*.json /home/node/
         mkdir types
         cp /home/node/devapp/types/*.json /home/node/types/
-        ln -s /home/node/devapp/types/src ./types/src
+        ln -Ts /home/node/devapp/types/src ./types/src
         mkdir api
         mkdir api/crud
         cp /home/node/devapp/api/crud/*.json /home/node/api/crud/
-        ln -s /home/node/devapp/api/crud/src ./api/crud/src
+        ln -Ts /home/node/devapp/api/crud/src ./api/crud/src
         npm ci
+        npm run build -w types
         npm run dev -w api/crud
   mongo:
     image: mongo

@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/msimmdev/project-sangheili#readme",
   "dependencies": {
-    "@msimmdev/project-sangheili-types": "^0.1.0",
     "express": "^4.18.2",
     "mongodb": "^5.7.0"
   }

@@ -2,10 +2,14 @@
   "name": "@msimmdev/project-sangheili-types",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/msimmdev/the-free-cookbook.git"
+  },
+  "scripts": {
+    "build": "rimraf dist/ && npx tsc"
   },
   "author": "",
   "license": "ISC",
