@@ -1,14 +1,13 @@
-import { UUID } from "crypto";
-import RecipeIngredient from "./recipe-ingredient";
-import RecipeSection from "./recipe-section";
-import { Duration } from "moment";
-import Image from "./Image";
+import { z } from "zod";
+import { ImageSchema } from "./image";
 
-type RecipeSummary = {
-  id: UUID;
-  name: string;
-  description: string;
-  mainImage: Image;
-};
+const RecipeSummarySchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  mainImage: ImageSchema,
+});
 
+type RecipeSummary = z.infer<typeof RecipeSummarySchema>;
+
+export { RecipeSummarySchema };
 export default RecipeSummary;

@@ -1,17 +1,24 @@
-import Recipe from "./recipe";
-import RecipeSummary from "./recipe-summary";
-import RecipeIngredient from "./recipe-ingredient";
-import RecipeSection from "./recipe-section";
-import RecipeStep from "./recipe-step";
-import Dish from "./dish";
-import Image from "./Image";
+import Recipe, { RecipeSchema } from "./recipe";
+import RecipeSummary, { RecipeSummarySchema } from "./recipe-summary";
+import RecipeIngredient, { RecipeIngredientSchema } from "./recipe-ingredient";
+import RecipeSection, { RecipeSectionSchema } from "./recipe-section";
+import RecipeStep, { RecipeStepSchema } from "./recipe-step";
+import Dish, { DishSchema } from "./dish";
+import Image, { ImageSchema } from "./image";
 
 export {
   Recipe,
+  RecipeSchema,
   RecipeSummary,
+  RecipeSummarySchema,
   RecipeIngredient,
+  RecipeIngredientSchema,
   RecipeSection,
+  RecipeSectionSchema,
   RecipeStep,
+  RecipeStepSchema,
   Dish,
+  DishSchema,
   Image,
+  ImageSchema,
 };

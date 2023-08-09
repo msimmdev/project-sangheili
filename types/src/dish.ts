@@ -1,13 +1,15 @@
-import { UUID } from "crypto";
-import Image from "./Image";
-import RecipeSummary from "./recipe-summary";
+import { z } from "zod";
+import { RecipeSummarySchema } from "./recipe-summary";
+import { ImageSchema } from "./image";
 
-type Dish = {
-  id: UUID;
-  name: string;
-  description: string;
-  defaultRecipe: RecipeSummary;
-  mainImage: Image;
-};
+const DishSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  defaultRecipe: RecipeSummarySchema,
+  mainImage: ImageSchema,
+});
 
+type Dish = z.infer<typeof DishSchema>;
+
+export { DishSchema };
 export default Dish;

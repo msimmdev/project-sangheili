@@ -1,30 +1,26 @@
-import { UUID } from "crypto";
-import { Duration } from "moment";
-import RecipeIngredient from "./recipe-ingredient";
-import RecipeSection from "./recipe-section";
-import RecipeSummary from "./recipe-summary";
-import Image from "./Image";
+import { RecipeIngredientSchema } from "./recipe-ingredient";
+import { RecipeSectionSchema } from "./recipe-section";
+import { RecipeSummarySchema } from "./recipe-summary";
+import { ImageSchema } from "./image";
 
-enum RecipeType {
-  StandAlone,
-  Variant,
-  Remix,
-}
+import { z } from "zod";
 
-type Recipe = {
-  id: UUID;
-  name: string;
-  description: string;
-  type: RecipeType;
-  ingredientList: RecipeIngredient[];
-  productList: RecipeIngredient[];
-  sections: RecipeSection[];
-  totalTime: Duration | null;
-  prepTime: Duration | null;
-  cookTime: Duration | null;
-  mainImage: Image | null;
-  remixParent: RecipeSummary | null;
-  remixChildren: RecipeSummary[];
-};
+const RecipeSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  type: z.enum(["StandAlone", "Remix"]),
+  ingredientList: z.array(RecipeIngredientSchema),
+  productList: z.array(RecipeIngredientSchema),
+  sections: z.array(RecipeSectionSchema),
+  totalTime: z.bigint().positive().optional(),
+  prepTime: z.bigint().positive().optional(),
+  cookTime: z.bigint().positive().optional(),
+  mainImage: ImageSchema,
+  remixParent: RecipeSummarySchema,
+  remixChildren: z.array(RecipeSummarySchema),
+});
 
+type Recipe = z.infer<typeof RecipeSchema>;
+
+export { RecipeSchema };
 export default Recipe;
