@@ -5,6 +5,7 @@ import RecipeSection, { RecipeSectionSchema } from "./recipe-section";
 import RecipeStep, { RecipeStepSchema } from "./recipe-step";
 import Dish, { DishSchema } from "./dish";
 import Image, { ImageSchema } from "./image";
+import { DbId, DbIdSchema, DbMeta, DbMetaSchema } from "./db";
 
 export {
   Recipe,
@@ -21,4 +22,8 @@ export {
   DishSchema,
   Image,
   ImageSchema,
+  DbId,
+  DbIdSchema,
+  DbMeta,
+  DbMetaSchema,
 };

@@ -5,7 +5,7 @@ import { ImageSchema } from "./image";
 const DishSchema = z.object({
   name: z.string(),
   description: z.string(),
-  defaultRecipe: RecipeSummarySchema,
+  defaultRecipe: RecipeSummarySchema.optional(),
   mainImage: ImageSchema,
 });
 
