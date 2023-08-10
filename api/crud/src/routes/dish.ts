@@ -1,6 +1,5 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { dishes } from "../db";
-import { ZodIssue } from "zod";
 import { ObjectId } from "mongodb";
 import {
   Dish,
@@ -13,7 +12,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req, res, next) => {
   try {
     const dishData = await dishes.find({});
     const dishResult: (Dish & DbId & DbMeta)[] = [];
@@ -29,12 +28,12 @@ router.get("/", async (req: Request, res: Response) => {
       }
     }
     res.status(200).json(dishResult);
-  } catch {
-    res.sendStatus(500);
+  } catch (e) {
+    next(e);
   }
 });
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req, res, next) => {
   try {
     const parseResult = await DishSchema.strict().safeParseAsync(req.body);
     if (!parseResult.success) {
@@ -51,15 +50,54 @@ router.post("/", async (req: Request, res: Response) => {
         ...newItem,
         id: insertResult.insertedId.toJSON(),
       };
-      res.status(200).json(returnItem);
+      res.status(201).json(returnItem);
     }
   } catch (e) {
-    console.error(e);
-    res.sendStatus(500);
+    next(e);
   }
 });
 
-router.delete("/:objectId", async (req: Request, res: Response) => {
+router.put("/:objectId", async (req, res, next) => {
+  try {
+    const id = new ObjectId(req.params.objectId);
+    const parseResult = await DishSchema.strict().safeParseAsync(req.body);
+    if (!parseResult.success) {
+      res.status(400).json(parseResult.error.issues);
+    } else {
+      const now = new Date().toJSON();
+      const findItem = await dishes.findOne({ _id: id });
+      if (findItem == null) {
+        const newItem: Dish & DbMeta = {
+          ...parseResult.data,
+          createdOn: now,
+          lastUpdatedOn: now,
+        };
+        const insertResult = await dishes.insertOne({ ...newItem, _id: id });
+        const returnItem: Dish & DbMeta & DbId = {
+          ...newItem,
+          id: insertResult.insertedId.toJSON(),
+        };
+        res.status(201).json(returnItem);
+      } else {
+        const updatedItem: Dish & DbMeta = {
+          ...parseResult.data,
+          createdOn: findItem.createdOn,
+          lastUpdatedOn: now,
+        };
+        await dishes.updateOne({ _id: id }, { $set: updatedItem });
+        const returnItem: Dish & DbMeta & DbId = {
+          ...updatedItem,
+          id: findItem._id.toJSON(),
+        };
+        res.status(200).json(returnItem);
+      }
+    }
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.delete("/:objectId", async (req, res, next) => {
   try {
     const id = new ObjectId(req.params.objectId);
     let deleteResult = await dishes.deleteOne({ _id: id }, {});
@@ -69,8 +107,7 @@ router.delete("/:objectId", async (req: Request, res: Response) => {
       res.status(404).end();
     }
   } catch (e) {
-    console.error(e);
-    res.sendStatus(500);
+    next(e);
   }
 });
 
