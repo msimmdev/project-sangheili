@@ -33,6 +33,9 @@ services:
       - 127.0.0.1:5173:5173
     environment:
       NODE_ENV: development
+      VITE_AUTH_AUTHORITY: https://sangheili.b2clogin.com/sangheili.onmicrosoft.com/B2C_1_account/v2.0/
+      VITE_AUTH_CLIENTID: e290f4cc-3569-47a6-8682-986966185ea1
+      VITE_AUTH_REDIRECT: http://localhost:5173/
     volumes:
       - ./:/home/node/devapp
     expose:
