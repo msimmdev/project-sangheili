@@ -33,6 +33,35 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:objectId", async (req, res, next) => {
+  try {
+    if (!ObjectId.isValid(req.params.objectId)) {
+      res
+        .status(400)
+        .json({ code: "invalid_id", path: "objectId", message: "Invlid ID." });
+      return;
+    }
+    const id = new ObjectId(req.params.objectId);
+    const findItem = await dishes.findOne({ _id: id });
+    if (findItem === null) {
+      res.status(404).end();
+      return;
+    }
+    findItem.id = findItem._id.toJSON();
+    const parseResult = await DishSchema.merge(DbIdSchema)
+      .merge(DbMetaSchema)
+      .safeParseAsync(findItem);
+    if (!parseResult.success) {
+      console.error(parseResult.error);
+      res.status(500).end();
+      return;
+    }
+    res.status(200).json(parseResult.data);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.post("/", async (req, res, next) => {
   try {
     const parseResult = await DishSchema.strict().safeParseAsync(req.body);
