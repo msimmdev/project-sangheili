@@ -14,6 +14,10 @@ const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
+    if (!req.hasScope("Dishes.Read") && !req.hasScope("Dishes.ReadWrite")) {
+      return res.sendStatus(403);
+    }
+
     const dishResult: (Dish & DbId & DbMeta)[] = [];
     const dishData = await dishes.find({});
 
@@ -38,6 +42,10 @@ router.get("/", async (req, res, next) => {
 
 router.get("/:objectId", async (req, res, next) => {
   try {
+    if (!req.hasScope("Dishes.Read") && !req.hasScope("Dishes.ReadWrite")) {
+      return res.sendStatus(403);
+    }
+
     if (!ObjectId.isValid(req.params.objectId)) {
       return res
         .status(400)
@@ -69,6 +77,10 @@ router.get("/:objectId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
+    if (!req.hasScope("Dishes.ReadWrite")) {
+      return res.sendStatus(403);
+    }
+
     const parseResult = await DishSchema.strict().safeParseAsync(req.body);
 
     if (!parseResult.success) {
@@ -97,6 +109,10 @@ router.post("/", async (req, res, next) => {
 
 router.put("/:objectId", async (req, res, next) => {
   try {
+    if (!req.hasScope("Dishes.ReadWrite")) {
+      return res.sendStatus(403);
+    }
+
     if (!ObjectId.isValid(req.params.objectId)) {
       return res
         .status(400)
@@ -151,6 +167,10 @@ router.put("/:objectId", async (req, res, next) => {
 
 router.patch("/:objectId", async (req, res, next) => {
   try {
+    if (!req.hasScope("Dishes.ReadWrite")) {
+      return res.sendStatus(403);
+    }
+
     if (!ObjectId.isValid(req.params.objectId)) {
       return res
         .status(400)
@@ -189,6 +209,10 @@ router.patch("/:objectId", async (req, res, next) => {
 
 router.delete("/:objectId", async (req, res, next) => {
   try {
+    if (!req.hasScope("Dishes.ReadWrite")) {
+      return res.sendStatus(403);
+    }
+
     if (!ObjectId.isValid(req.params.objectId)) {
       return res
         .status(400)
