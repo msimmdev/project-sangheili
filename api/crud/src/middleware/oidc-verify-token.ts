@@ -52,7 +52,6 @@ function oidcVerifyToken(): (
       },
       (err, token) => {
         if (err !== null) {
-          console.log(err);
           return res.sendStatus(403);
         }
 
@@ -61,9 +60,9 @@ function oidcVerifyToken(): (
         }
 
         req.userToken = token;
+        return next();
       }
     );
-    return next();
   };
 }
 
