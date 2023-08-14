@@ -6,6 +6,7 @@ import RecipeStep, { RecipeStepSchema } from "./recipe-step";
 import Dish, { DishSchema } from "./dish";
 import Image, { ImageSchema } from "./image";
 import { DbId, DbIdSchema, DbMeta, DbMetaSchema } from "./db";
+import { AppUserSchema, AppUser } from "./app-user";
 
 export {
   Recipe,
@@ -26,4 +27,6 @@ export {
   DbIdSchema,
   DbMeta,
   DbMetaSchema,
+  AppUser,
+  AppUserSchema,
 };

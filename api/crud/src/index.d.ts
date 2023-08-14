@@ -1,3 +1,4 @@
+import { AppUser } from "@msimmdev/project-sangheili-types";
 import { JwtPayload } from "jsonwebtoken";
 
 export {};
@@ -6,7 +7,8 @@ declare global {
   namespace Express {
     export interface Request {
       userToken?: JwtPayload;
-      scopes: string[] | undefined;
+      user?: AppUser;
+      scopes?: string[];
       hasScope: (scope: string) => boolean;
     }
   }

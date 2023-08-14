@@ -2,12 +2,14 @@ import express, { NextFunction, Request, Response } from "express";
 import dishRouter from "./routes/dish";
 import oidcVerifyToken from "./middleware/oidc-verify-token";
 import tokenScopes from "./middleware/token-scopes";
+import tokenUser from "./middleware/token-user";
 
 const app = express();
 const port = 3100;
 
 app.use(oidcVerifyToken());
 app.use(tokenScopes());
+app.use(tokenUser());
 
 app.use(express.json());
 

@@ -5,5 +5,6 @@ const client = new MongoClient(connectionString);
 client.connect();
 const database = client.db("sangheili");
 const dishes = database.collection("dishes");
+const users = database.collection("users");
 
-export { dishes };
+export { dishes, users };
