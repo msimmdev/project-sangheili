@@ -9,7 +9,7 @@ import {
 import { dishes } from "../db";
 import { ObjectId } from "mongodb";
 
-async function GetDishes(): Promise<(Dish & DbId & DbMeta)[]> {
+async function getDishes(): Promise<(Dish & DbId & DbMeta)[]> {
   const dishResult: (Dish & DbId & DbMeta)[] = [];
   const dishData = await dishes.find({});
 
@@ -29,28 +29,25 @@ async function GetDishes(): Promise<(Dish & DbId & DbMeta)[]> {
   return dishResult;
 }
 
-async function GetDish(objectId: string): Promise<Dish & DbId & DbMeta> {
+async function getDish(
+  objectId: string
+): Promise<(Dish & DbId & DbMeta) | null> {
   const id = new ObjectId(objectId);
   const findItem = await dishes.findOne({ _id: id });
 
   if (findItem === null) {
-    throw new Error("404");
+    return null;
   }
 
   findItem.id = findItem._id.toJSON();
   const parseResult = await DishSchema.merge(DbIdSchema)
     .merge(DbMetaSchema)
-    .safeParseAsync(findItem);
+    .parseAsync(findItem);
 
-  if (!parseResult.success) {
-    console.error(parseResult.error);
-    throw new Error(parseResult.error.message);
-  }
-
-  return parseResult.data;
+  return parseResult;
 }
 
-async function StoreDish(dish: Dish): Promise<Dish & DbMeta & DbId> {
+async function storeDish(dish: Dish): Promise<Dish & DbMeta & DbId> {
   const now = new Date().toJSON();
   const newItem: Dish & DbMeta = {
     ...dish,
@@ -68,7 +65,7 @@ async function StoreDish(dish: Dish): Promise<Dish & DbMeta & DbId> {
   return returnItem;
 }
 
-async function AddOrReplaceDish(
+async function addOrReplaceDish(
   objectId: string,
   dish: Dish
 ): Promise<[Dish & DbMeta & DbId, boolean]> {
@@ -112,16 +109,16 @@ async function AddOrReplaceDish(
   }
 }
 
-async function UpdateDish(
+async function updateDish(
   objectId: string,
   dish: Partial<Dish>
-): Promise<void> {
+): Promise<boolean> {
   const id = new ObjectId(objectId);
 
   const findItem = await dishes.findOne({ _id: id });
 
   if (findItem === null) {
-    throw new Error("404");
+    return false;
   }
 
   const now = new Date().toJSON();
@@ -132,23 +129,27 @@ async function UpdateDish(
   };
 
   await dishes.updateOne({ _id: id }, { $set: updatedItem });
+
+  return true;
 }
 
-async function DeleteDish(objectId: string): Promise<void> {
+async function deleteDish(objectId: string): Promise<boolean> {
   const id = new ObjectId(objectId);
 
   let deleteResult = await dishes.deleteOne({ _id: id }, {});
 
   if (deleteResult.deletedCount !== 1) {
-    throw new Error("404");
+    return false;
   }
+
+  return true;
 }
 
 export {
-  GetDishes,
-  GetDish,
-  StoreDish,
-  AddOrReplaceDish,
-  UpdateDish,
-  DeleteDish,
+  getDishes,
+  getDish,
+  storeDish,
+  addOrReplaceDish,
+  updateDish,
+  deleteDish,
 };
