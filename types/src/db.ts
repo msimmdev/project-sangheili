@@ -8,7 +8,7 @@ type DbId = z.infer<typeof DbIdSchema>;
 
 const DbMetaSchema = z.object({
   createdOn: z.string().datetime(),
-  lastUpdatedOn: z.string().datetime(),
+  lastUpdatedOn: z.string().datetime().nullable(),
 });
 
 type DbMeta = z.infer<typeof DbMetaSchema>;

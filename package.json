@@ -4,6 +4,7 @@
     "app",
     "manageApp",
     "types",
-    "api/crud"
+    "api/crud",
+    "data/load"
   ]
 }

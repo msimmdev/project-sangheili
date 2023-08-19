@@ -1,6 +1,6 @@
 services:
   app:
-    image: "node:20"
+    image: "node:20-alpine"
     user: "node"
     working_dir: /home/node
     ports:
@@ -26,7 +26,7 @@ services:
         npm ci
         npm run dev -w app
   manageApp:
-    image: "node:20"
+    image: "node:20-alpine"
     user: "node"
     working_dir: /home/node
     ports:
@@ -57,7 +57,7 @@ services:
         npm ci
         npm run dev -w manageApp -- --port 5173 --strictPort --host
   api-crud:
-    image: "node:20"
+    image: "node:20-alpine"
     user: "node"
     working_dir: /home/node
     ports:
@@ -67,6 +67,7 @@ services:
       MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo-1:27017/admin
       AUTH_VALID_ISS: https://sangheili.b2clogin.com/1a317a16-ba37-4af9-8a64-63537fc2b34e/v2.0/
       AUTH_VALID_AUD: 76dcec81-27ef-4b4b-ad4a-e722a65963b5
+      ADMIN_ACCOUNT_ID: 39d41a99-7e87-41e9-aa58-594f0e171dca
     volumes:
       - ./:/home/node/devapp
     expose:
@@ -83,6 +84,7 @@ services:
         mkdir api/crud
         cp /home/node/devapp/api/crud/*.json /home/node/api/crud/
         ln -Ts /home/node/devapp/api/crud/src ./api/crud/src
+        ln -Ts /home/node/devapp/data ./data
         npm ci
         npm run build -w types
         npm run dev -w api/crud

@@ -1,5 +1,9 @@
 import { users } from "../db";
-import { AppUser, AppUserSchema } from "@msimmdev/project-sangheili-types";
+import {
+  AppUser,
+  AppUserSchema,
+  DbMeta,
+} from "@msimmdev/project-sangheili-types";
 
 async function getAppUser(externalId: string): Promise<AppUser | null> {
   const findItem = await users.findOne({ externalId: externalId });
@@ -18,7 +22,14 @@ async function storeAppUser(user: AppUser): Promise<boolean> {
     return false;
   }
 
-  await users.insertOne({ ...user });
+  const now = new Date().toJSON();
+  const newUser: AppUser & DbMeta = {
+    ...user,
+    createdOn: now,
+    lastUpdatedOn: null,
+  };
+
+  await users.insertOne(newUser);
 
   return true;
 }
@@ -33,7 +44,14 @@ async function updateAppUser(
     return false;
   }
 
-  await users.updateOne({ _id: findItem.id }, { $set: user });
+  const now = new Date().toJSON();
+  const updateUser: Partial<AppUser> & DbMeta = {
+    ...user,
+    createdOn: findItem.createdOn,
+    lastUpdatedOn: now,
+  };
+
+  await users.updateOne({ _id: findItem.id }, { $set: updateUser });
 
   return true;
 }

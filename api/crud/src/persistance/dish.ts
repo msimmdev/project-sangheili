@@ -52,7 +52,7 @@ async function storeDish(dish: Dish): Promise<Dish & DbMeta & DbId> {
   const newItem: Dish & DbMeta = {
     ...dish,
     createdOn: now,
-    lastUpdatedOn: now,
+    lastUpdatedOn: null,
   };
 
   const insertResult = await dishes.insertOne({ ...newItem });
@@ -78,7 +78,7 @@ async function addOrReplaceDish(
     const newItem: Dish & DbMeta = {
       ...dish,
       createdOn: now,
-      lastUpdatedOn: now,
+      lastUpdatedOn: null,
     };
 
     const insertResult = await dishes.insertOne({ ...newItem, _id: id });

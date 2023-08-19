@@ -1,0 +1,31 @@
+{
+  "name": "@msimmdev/project-sangheili-data-load",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "run-func": "^3.0.0",
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "build": "tsc && cp src/.env.local dist/.env.local",
+    "start": "npm run build && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msimmdev/project-sangheili.git"
+  },
+  "author": "Michael Simm",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/msimmdev/project-sangheili/issues"
+  },
+  "homepage": "https://github.com/msimmdev/project-sangheili#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "mongodb": "^5.7.0",
+    "zod": "^3.22.2"
+  }
+}
