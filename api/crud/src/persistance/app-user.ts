@@ -1,9 +1,5 @@
 import { users } from "../db";
-import {
-  AppUser,
-  AppUserSchema,
-  DbMeta,
-} from "@msimmdev/project-sangheili-types";
+import { AppUser, AppUserSchema } from "@msimmdev/project-sangheili-types";
 
 async function getAppUser(userId: string): Promise<AppUser | null> {
   const findItem = await users.findOne({ userId: userId });

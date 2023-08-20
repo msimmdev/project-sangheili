@@ -17,13 +17,12 @@ import verifyAccess from "../util/verify-access";
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
-  console.log(req.user);
   try {
     if (!req.hasScope("Dishes.Read") && !req.hasScope("Dishes.ReadWrite")) {
       return res.sendStatus(403);
     }
 
-    const dishResult = await getDishes();
+    const dishResult = await getDishes(req.user?.userId);
     const authorizedDishes = dishResult.filter((dish) =>
       verifyAccess(dish, "Read", req.user)
     );

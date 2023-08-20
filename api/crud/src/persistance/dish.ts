@@ -1,6 +1,5 @@
 import {
   Dish,
-  DbId,
   DbMeta,
   DishSchema,
   DbIdSchema,
@@ -8,12 +7,25 @@ import {
   OwnedResource,
   OwnedResourceSchema,
 } from "@msimmdev/project-sangheili-types";
-import { dishes } from "../db";
-import { ObjectId } from "mongodb";
+import { dishes, DbDish } from "../db";
+import { ObjectId, Filter } from "mongodb";
 
-async function getDishes(): Promise<(Dish & DbId & DbMeta & OwnedResource)[]> {
-  const dishResult: (Dish & DbId & DbMeta & OwnedResource)[] = [];
-  const dishData = await dishes.find({});
+async function getDishes(userId?: string): Promise<DbDish[]> {
+  const dishResult: DbDish[] = [];
+
+  const accessFilters: Filter<DbDish>[] = [{ visibility: "Public" }];
+  if (typeof userId !== "undefined") {
+    accessFilters.push({ "owner.userId": userId });
+    accessFilters.push({
+      share: {
+        $elemMatch: {
+          $and: [{ "sharedWith.userId": userId }, { permissionLevel: "Read" }],
+        },
+      },
+    });
+  }
+
+  const dishData = await dishes.find({ $and: [{ $or: accessFilters }] });
 
   for await (const dishObj of dishData) {
     dishObj.id = dishObj._id.toJSON();
@@ -32,9 +44,7 @@ async function getDishes(): Promise<(Dish & DbId & DbMeta & OwnedResource)[]> {
   return dishResult;
 }
 
-async function getDish(
-  objectId: string
-): Promise<(Dish & DbId & DbMeta & OwnedResource) | null> {
+async function getDish(objectId: string): Promise<DbDish | null> {
   const id = new ObjectId(objectId);
   const findItem = await dishes.findOne({ _id: id });
 
@@ -54,7 +64,7 @@ async function getDish(
 async function storeDish(
   dish: Dish,
   newResource: OwnedResource
-): Promise<Dish & OwnedResource & DbMeta & DbId> {
+): Promise<DbDish> {
   const now = new Date().toJSON();
   const newItem: Dish & OwnedResource & DbMeta = {
     ...dish,
@@ -65,7 +75,7 @@ async function storeDish(
 
   const insertResult = await dishes.insertOne({ ...newItem });
 
-  const returnItem: Dish & OwnedResource & DbMeta & DbId = {
+  const returnItem: DbDish = {
     ...newItem,
     id: insertResult.insertedId.toJSON(),
   };
