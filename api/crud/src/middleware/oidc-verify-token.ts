@@ -17,15 +17,14 @@ function oidcVerifyToken(): (
 ) => void {
   return async (req, res, next) => {
     const authHeader = req.headers.authorization;
-    if (typeof authHeader === "undefined") {
-      return res.sendStatus(403);
+    if (typeof authHeader === "undefined" || authHeader === "") {
+      return res.sendStatus(401);
     }
 
     const [tokenType, token] = authHeader.split(" ");
 
     if (tokenType !== "Bearer") {
-      console.log(tokenType);
-      return res.sendStatus(403);
+      return res.sendStatus(400);
     }
 
     const signingKeys = await metadataService.getSigningKeys();
@@ -52,11 +51,11 @@ function oidcVerifyToken(): (
       },
       (err, token) => {
         if (err !== null) {
-          return res.sendStatus(403);
+          return res.sendStatus(401);
         }
 
         if (typeof token === "string" || typeof token === "undefined") {
-          return res.sendStatus(403);
+          return res.sendStatus(401);
         }
 
         req.userToken = token;
