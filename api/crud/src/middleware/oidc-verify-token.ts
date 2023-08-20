@@ -24,7 +24,11 @@ function oidcVerifyToken(): (
     const [tokenType, token] = authHeader.split(" ");
 
     if (tokenType !== "Bearer") {
-      return res.sendStatus(400);
+      return res.status(400).json({
+        code: "invalid_token_type",
+        path: "[header]authorization",
+        message: "Invalid Token Type.",
+      });
     }
 
     const signingKeys = await metadataService.getSigningKeys();
@@ -51,7 +55,11 @@ function oidcVerifyToken(): (
       },
       (err, token) => {
         if (err !== null) {
-          return res.sendStatus(401);
+          return res.status(400).json({
+            code: "invalid_token",
+            path: "[header]authorization",
+            message: "Invalid Token.",
+          });
         }
 
         if (typeof token === "string" || typeof token === "undefined") {
