@@ -118,7 +118,7 @@ async function getUserData(
         (identity) => identity.signInType === "emailAddress"
       )?.issuerAssignedId;
       return {
-        externalId: item.id,
+        userId: item.id,
         name: item.displayName,
         email: email || null,
         createdOn: now,
@@ -135,7 +135,7 @@ async function updateUses(users: DbAppUser[]): Promise<void> {
   const usersCollection = database.collection("users");
   for (const user of users) {
     const storedUser = await usersCollection.findOne({
-      externalId: user.externalId,
+      userId: user.userId,
     });
     if (storedUser === null) {
       await usersCollection.insertOne(user);

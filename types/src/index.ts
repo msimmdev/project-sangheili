@@ -7,8 +7,22 @@ import Dish, { DishSchema } from "./dish";
 import Image, { ImageSchema } from "./image";
 import { DbId, DbIdSchema, DbMeta, DbMetaSchema } from "./db";
 import { AppUserSchema, AppUser } from "./app-user";
+import {
+  OwnedResourceSchema,
+  OwnedResource,
+  ResourceVisibilitySchema,
+  ResourceVisibility,
+  ResourceActionSchema,
+  ResourceAction,
+} from "./owned-resource";
 
 export {
+  OwnedResourceSchema,
+  OwnedResource,
+  ResourceVisibilitySchema,
+  ResourceVisibility,
+  ResourceActionSchema,
+  ResourceAction,
   Recipe,
   RecipeSchema,
   RecipeSummary,
