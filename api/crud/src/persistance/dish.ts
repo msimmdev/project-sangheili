@@ -10,19 +10,28 @@ import {
 import { dishes, DbDish } from "../db";
 import { ObjectId, Filter } from "mongodb";
 
-async function getDishes(userId?: string): Promise<DbDish[]> {
+async function getDishes(
+  accessRestrictions: boolean,
+  userId?: string
+): Promise<DbDish[]> {
   const dishResult: DbDish[] = [];
 
-  const accessFilters: Filter<DbDish>[] = [{ visibility: "Public" }];
-  if (typeof userId !== "undefined") {
-    accessFilters.push({ "owner.userId": userId });
-    accessFilters.push({
-      share: {
-        $elemMatch: {
-          $and: [{ "sharedWith.userId": userId }, { permissionLevel: "Read" }],
+  const accessFilters: Filter<DbDish>[] = [];
+  if (accessRestrictions) {
+    accessFilters.push({ visibility: "Public" });
+    if (typeof userId !== "undefined") {
+      accessFilters.push({ "owner.userId": userId });
+      accessFilters.push({
+        share: {
+          $elemMatch: {
+            $and: [
+              { "sharedWith.userId": userId },
+              { permissionLevel: "Read" },
+            ],
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   const dishData = await dishes.find({ $and: [{ $or: accessFilters }] });

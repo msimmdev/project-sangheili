@@ -22,7 +22,10 @@ router.get("/", async (req, res, next) => {
       return res.sendStatus(403);
     }
 
-    const dishResult = await getDishes(req.user?.userId);
+    const dishResult = await getDishes(
+      req.user?.roles.includes("SuperAdmin") || true,
+      req.user?.userId
+    );
     const authorizedDishes = dishResult.filter((dish) =>
       verifyAccess(dish, "Read", req.user)
     );
