@@ -16,9 +16,9 @@ async function getDishes(
 ): Promise<DbDish[]> {
   const dishResult: DbDish[] = [];
 
-  const accessFilters: Filter<DbDish>[] = [];
+  const filters: Filter<DbDish>[] = [];
   if (accessRestrictions) {
-    accessFilters.push({ visibility: "Public" });
+    const accessFilters: Filter<DbDish>[] = [{ visibility: "Public" }];
     if (typeof userId !== "undefined") {
       accessFilters.push({ "owner.userId": userId });
       accessFilters.push({
@@ -32,9 +32,15 @@ async function getDishes(
         },
       });
     }
+    filters.push({ $or: accessFilters });
   }
 
-  const dishData = await dishes.find({ $and: [{ $or: accessFilters }] });
+  const filterObj: Filter<DbDish> = {};
+  if (filters.length > 0) {
+    filterObj.$and = filters;
+  }
+
+  const dishData = await dishes.find(filterObj);
 
   for await (const dishObj of dishData) {
     dishObj.id = dishObj._id.toJSON();

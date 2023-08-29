@@ -23,7 +23,7 @@ router.get("/", async (req, res, next) => {
     }
 
     const dishResult = await getDishes(
-      req.user?.roles.includes("SuperAdmin") || true,
+      !req.user?.roles.includes("SuperAdmin") ?? true,
       req.user?.userId
     );
     const authorizedDishes = dishResult.filter((dish) =>
