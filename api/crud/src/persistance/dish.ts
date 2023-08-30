@@ -9,9 +9,11 @@ import {
 } from "@msimmdev/project-sangheili-types";
 import { dishes, DbDish } from "../db";
 import { ObjectId, Filter } from "mongodb";
+import { DishFilter } from "../filters/get-dishes-filter";
 
 async function getDishes(
   accessRestrictions: boolean,
+  queryFilter: DishFilter,
   userId?: string
 ): Promise<DbDish[]> {
   const dishResult: DbDish[] = [];
@@ -33,6 +35,83 @@ async function getDishes(
       });
     }
     filters.push({ $or: accessFilters });
+  }
+
+  if (typeof queryFilter !== "undefined") {
+    if (typeof queryFilter.name?.$eq !== "undefined") {
+      filters.push({ name: queryFilter.name.$eq });
+    }
+
+    if (typeof queryFilter.name?.$contains !== "undefined") {
+      filters.push({
+        name: { $regex: queryFilter.name?.$contains, $options: "i" },
+      });
+    }
+
+    if (typeof queryFilter.visibility?.$eq !== "undefined") {
+      filters.push({ visibility: queryFilter.visibility?.$eq });
+    }
+
+    if (typeof queryFilter.createdOn?.$gt !== "undefined") {
+      filters.push({ createdOn: { $gt: queryFilter.createdOn?.$gt } });
+    }
+
+    if (typeof queryFilter.createdOn?.$lt !== "undefined") {
+      filters.push({ createdOn: { $lt: queryFilter.createdOn?.$lt } });
+    }
+
+    if (typeof queryFilter.createdOn?.$gte !== "undefined") {
+      filters.push({ createdOn: { $gte: queryFilter.createdOn?.$gte } });
+    }
+
+    if (typeof queryFilter.createdOn?.$lte !== "undefined") {
+      filters.push({ createdOn: { $lte: queryFilter.createdOn?.$lte } });
+    }
+
+    if (typeof queryFilter.lastUpdatedOn?.$gt !== "undefined") {
+      filters.push({ lastUpdatedOn: { $gt: queryFilter.lastUpdatedOn?.$gt } });
+    }
+
+    if (typeof queryFilter.lastUpdatedOn?.$lt !== "undefined") {
+      filters.push({ lastUpdatedOn: { $lt: queryFilter.lastUpdatedOn?.$lt } });
+    }
+
+    if (typeof queryFilter.lastUpdatedOn?.$gte !== "undefined") {
+      filters.push({
+        lastUpdatedOn: { $gte: queryFilter.lastUpdatedOn?.$gte },
+      });
+    }
+
+    if (typeof queryFilter.lastUpdatedOn?.$lte !== "undefined") {
+      filters.push({
+        lastUpdatedOn: { $lte: queryFilter.lastUpdatedOn?.$lte },
+      });
+    }
+
+    if (typeof queryFilter.owner?.$eq !== "undefined") {
+      filters.push({
+        "owner.userId":
+          queryFilter.owner?.$eq === "$me" ? userId : queryFilter.owner?.$eq,
+      });
+    }
+
+    if (typeof queryFilter.shared?.$eq !== "undefined") {
+      filters.push({
+        share: {
+          $elemMatch: {
+            $and: [
+              {
+                "sharedWith.userId":
+                  queryFilter.owner?.$eq === "$me"
+                    ? userId
+                    : queryFilter.owner?.$eq,
+              },
+              { permissionLevel: "Read" },
+            ],
+          },
+        },
+      });
+    }
   }
 
   const filterObj: Filter<DbDish> = {};

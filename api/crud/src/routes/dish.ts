@@ -1,9 +1,5 @@
 import express from "express";
-import {
-  Dish,
-  DishSchema,
-  OwnedResource,
-} from "@msimmdev/project-sangheili-types";
+import { DishSchema, OwnedResource } from "@msimmdev/project-sangheili-types";
 import { validateId } from "../persistance";
 import {
   getDish,
@@ -13,6 +9,7 @@ import {
   deleteDish,
 } from "../persistance/dish";
 import verifyAccess from "../util/verify-access";
+import { DishFilterSchema } from "../filters/get-dishes-filter";
 
 const router = express.Router();
 
@@ -22,8 +19,14 @@ router.get("/", async (req, res, next) => {
       return res.sendStatus(403);
     }
 
+    const queryParseResult = await DishFilterSchema.safeParseAsync(req.query);
+    if (!queryParseResult.success) {
+      return res.status(400).json(queryParseResult.error);
+    }
+
     const dishResult = await getDishes(
       !req.user?.roles.includes("SuperAdmin") ?? true,
+      queryParseResult.data,
       req.user?.userId
     );
     const authorizedDishes = dishResult.filter((dish) =>
