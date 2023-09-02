@@ -121,6 +121,14 @@ async function getDishes(
 
   const dishData = await dishes.find(filterObj);
 
+  if (typeof queryFilter?.offset !== "undefined") {
+    dishData.skip(queryFilter.offset);
+  }
+
+  if (typeof queryFilter?.limit !== "undefined") {
+    dishData.limit(queryFilter?.limit);
+  }
+
   for await (const dishObj of dishData) {
     dishObj.id = dishObj._id.toJSON();
     const parseResult = await DishSchema.merge(DbIdSchema)

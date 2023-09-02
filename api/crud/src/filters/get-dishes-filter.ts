@@ -46,6 +46,8 @@ const DishFilterSchema = z
       })
       .strict()
       .optional(),
+    limit: z.coerce.number().positive().int().optional(),
+    offset: z.coerce.number().nonnegative().int().optional(),
   })
   .strict()
   .optional();
