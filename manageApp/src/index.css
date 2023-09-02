@@ -29,7 +29,7 @@ main {
 header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: stretch;
   align-items: center;
   height: 100%;
 }

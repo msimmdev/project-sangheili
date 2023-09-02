@@ -1,8 +1,12 @@
-import { EditRecipe } from "./Pages";
+import { AddDish, ManageDishes } from "./Pages";
 
 export default [
   {
-    path: "recipe/edit",
-    element: <EditRecipe />,
+    path: "dishes",
+    element: <ManageDishes />,
+  },
+  {
+    path: "dishes/add",
+    element: <AddDish />,
   },
 ];
