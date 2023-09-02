@@ -16,6 +16,6 @@ declare global {
 
 declare module "jsonwebtoken" {
   export interface JwtPayload {
-    scp?: string | undefined;
+    scp?: string;
   }
 }
