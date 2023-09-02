@@ -1,12 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import e, { NextFunction, Request, Response } from "express";
 import { OidcClient } from "oidc-client-ts";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { subtle, KeyObject } from "crypto";
 
 const metadataService = new OidcClient({
-  authority:
-    "https://sangheili.b2clogin.com/sangheili.onmicrosoft.com/B2C_1_account/v2.0/",
-  client_id: "e290f4cc-3569-47a6-8682-986966185ea1",
+  authority: process.env.AUTH_AUTHORITY || "",
+  client_id: "",
   redirect_uri: "",
 }).metadataService;
 
@@ -35,18 +34,31 @@ function oidcVerifyToken(): (
     await jwt.verify(
       token,
       async (header, callback) => {
-        if (signingKeys != null) {
-          const useKey = signingKeys.find((key) => key["kid"] === header.kid);
-          if (typeof useKey !== "undefined") {
-            const key = await subtle.importKey(
-              "jwk",
-              useKey,
-              { hash: "SHA-256", name: "RSASSA-PKCS1-v1_5" },
-              true,
-              []
-            );
-            callback(null, KeyObject.from(key));
+        if (header.alg === "RS256") {
+          if (signingKeys != null) {
+            const useKey = signingKeys.find((key) => key["kid"] === header.kid);
+            if (typeof useKey !== "undefined") {
+              const key = await subtle.importKey(
+                "jwk",
+                useKey,
+                { hash: "SHA-256", name: "RSASSA-PKCS1-v1_5" },
+                true,
+                []
+              );
+              callback(null, KeyObject.from(key));
+            } else {
+              return res.sendStatus(401);
+            }
+          } else {
+            return res.sendStatus(401);
           }
+        } else if (
+          header.alg === "HS256" &&
+          process.env.AUTH_ALLOW_LOCAL_TOKENS === "true"
+        ) {
+          callback(null, process.env.AUTH_LOCAL_SECRET);
+        } else {
+          return res.sendStatus(401);
         }
       },
       {

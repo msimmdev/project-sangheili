@@ -65,8 +65,11 @@ services:
     environment:
       NODE_ENV: development
       MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo-1:27017/admin
+      AUTH_AUTHORITY: https://sangheili.b2clogin.com/sangheili.onmicrosoft.com/B2C_1_account/v2.0/
       AUTH_VALID_ISS: https://sangheili.b2clogin.com/1a317a16-ba37-4af9-8a64-63537fc2b34e/v2.0/
       AUTH_VALID_AUD: 76dcec81-27ef-4b4b-ad4a-e722a65963b5
+      AUTH_ALLOW_LOCAL_TOKENS: true
+      AUTH_LOCAL_SECRET: testSecret
       ADMIN_ACCOUNT_ID: 39d41a99-7e87-41e9-aa58-594f0e171dca
     volumes:
       - ./:/home/node/devapp
