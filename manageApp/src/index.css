@@ -12,6 +12,10 @@ body {
 
 main {
   flex: 1;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: stretch;
+  width: 100%;
 }
 
 .container {
@@ -83,4 +87,16 @@ p {
 
 .material-symbols-outlined {
   font-variation-settings: FILL 0, wght 400, GRAD 0, opsz 48;
+}
+
+.full-page-content {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #d5d5db;
+  background-color: #ffffff;
+}
+
+.chakra-form-control {
+  margin-bottom: 10px;
 }

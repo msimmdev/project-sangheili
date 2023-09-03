@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useAuth, hasAuthParams } from "react-oidc-context";
 import { useEffect } from "react";
+import { Box, AbsoluteCenter, CircularProgress, Alert } from "@chakra-ui/react";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -14,11 +15,23 @@ function App() {
   }, [isAuthenticated, activeNavigator, isLoading, signinRedirect]);
 
   if (isLoading) {
-    return <p>Loading</p>;
+    return (
+      <Box position="relative" h="100px">
+        <AbsoluteCenter>
+          <CircularProgress />
+        </AbsoluteCenter>
+      </Box>
+    );
   }
 
   if (error) {
-    return <p>Error: {error.message}</p>;
+    return (
+      <Box position="relative" h="100px">
+        <AbsoluteCenter>
+          <Alert status="error">{error.message}</Alert>
+        </AbsoluteCenter>
+      </Box>
+    );
   }
 
   if (isAuthenticated) {

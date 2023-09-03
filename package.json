@@ -1,5 +1,9 @@
 {
   "name": "@msimmdev/project-sangheili",
+  "scripts": {
+    "start": "docker compose up -d && npm run loadusers",
+    "loadusers": "docker exec -d project-sangheili-api-crud-1 npm rnu start -w data/load"
+  },
   "workspaces": [
     "app",
     "manageApp",
