@@ -100,3 +100,12 @@ p {
 .chakra-form-control {
   margin-bottom: 10px;
 }
+
+.dropzone {
+  border: 1px solid #d5d5db;
+  background-color: #fafafa;
+}
+
+.icon-lg {
+  font-size: 4rem;
+}
