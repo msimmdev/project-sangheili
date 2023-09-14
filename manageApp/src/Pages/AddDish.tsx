@@ -7,59 +7,20 @@ import {
   Input,
   Textarea,
   SimpleGrid,
-  AspectRatio,
-  Flex,
-  Center,
-  Image,
-  Text,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Dish } from "@msimmdev/project-sangheili-types";
-import { useDropzone } from "react-dropzone";
-import { useState } from "react";
+import ImageUpload from "../Shared/ImageUpload";
 
 export default () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Dish>();
 
-  const [activeImage, setActiveImage] = useState<string>();
-
-  const reader = new FileReader();
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      reader.readAsDataURL(acceptedFiles[0]);
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          setActiveImage(reader.result);
-        }
-      };
-    },
-    multiple: false,
-    accept: { "image/*": [".png", ".gif", ".jpeg", ".jpg"] },
-  });
-
   const onSubmit: SubmitHandler<Dish> = (data) => console.log(data);
-
-  const uploadDisplay = (
-    <Flex flexDirection="column" padding="10px">
-      <Center>
-        <span className="material-symbols-outlined icon-lg">
-          add_photo_alternate
-        </span>
-      </Center>
-      {isDragActive ? (
-        <Text textAlign="center">Drop the image here ...</Text>
-      ) : (
-        <Text textAlign="center">
-          Drag 'n' drop an image here, or click to browse.
-        </Text>
-      )}
-    </Flex>
-  );
 
   return (
     <Box className="full-page-content">
@@ -71,7 +32,7 @@ export default () => {
               <FormLabel htmlFor="name">Dish Name</FormLabel>
               <Input
                 id="name"
-                placeholder="name"
+                placeholder="Enter a name for the dish"
                 {...register("name", { required: true })}
               />
             </FormControl>
@@ -79,29 +40,24 @@ export default () => {
               <FormLabel htmlFor="name">Dish Description</FormLabel>
               <Textarea
                 id="description"
-                placeholder="description"
+                placeholder="Enter a description for the dish"
+                rows={5}
                 {...register("description", { required: true })}
               />
             </FormControl>
           </Box>
-          <AspectRatio ratio={1.5} margin="10px">
-            <FormControl
-              isInvalid={typeof errors.mainImage?.url !== "undefined"}
-              {...getRootProps({ className: "dropzone" })}
-            >
-              <input
-                {...getInputProps({ refKey: "ref" })}
-                {...register("mainImage.url")}
-              />
-              {activeImage === undefined ? (
-                uploadDisplay
-              ) : (
-                <Image src={activeImage} />
-              )}
-            </FormControl>
-          </AspectRatio>
+          <ImageUpload
+            registerProps={register("mainImage.url")}
+            errors={errors}
+            setError={setError}
+            minImageWidth={1200}
+            minImageHeight={800}
+            aspect={1.5}
+          />
         </SimpleGrid>
-        <Button type="submit">Add Dish</Button>
+        <Button type="submit" variant="solid">
+          Add Dish
+        </Button>
       </form>
     </Box>
   );

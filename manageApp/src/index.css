@@ -104,6 +104,7 @@ p {
 .dropzone {
   border: 1px solid #d5d5db;
   background-color: #fafafa;
+  cursor: pointer;
 }
 
 .icon-lg {
