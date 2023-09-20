@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Flex,
   Center,
@@ -6,27 +6,38 @@ import {
   FormControl,
   AspectRatio,
   Alert,
+  Button,
+  Box,
 } from "@chakra-ui/react";
-import Cropper from "react-easy-crop";
+import Cropper, { Area } from "react-easy-crop";
 import { useDropzone } from "react-dropzone";
 import {
   UseFormRegisterReturn,
-  UseFormSetError,
-  FieldErrors,
+  FieldError,
+  ErrorOption,
 } from "react-hook-form";
-import { Dish } from "@msimmdev/project-sangheili-types";
+
+type ImageUploadData = {
+  imageFile: File;
+  imageURL: string;
+  cropArea: Area;
+};
+
+export type { ImageUploadData };
 
 export default ({
   registerProps,
-  errors,
+  error,
   setError,
+  setValue,
   minImageWidth,
   minImageHeight,
   aspect,
 }: {
   registerProps: UseFormRegisterReturn;
-  errors: FieldErrors<Dish>;
-  setError: UseFormSetError<Dish>;
+  error: FieldError | undefined;
+  setError: (e: ErrorOption) => void;
+  setValue: (e: ImageUploadData) => void;
   minImageWidth: number;
   minImageHeight: number;
   aspect: number;
@@ -38,16 +49,34 @@ export default ({
   const [zoom, setZoom] = useState(1);
   const [maxZoom, setMaxZoom] = useState(3);
 
+  useEffect(() => {
+    if (typeof activeImage === "undefined") {
+      if (typeof activeImageUrl !== "undefined") {
+        URL.revokeObjectURL(activeImageUrl);
+      }
+      setActiveImageUrl(undefined);
+    } else {
+      setActiveImageUrl(URL.createObjectURL(activeImage));
+    }
+  }, [activeImage]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof activeImageUrl !== "undefined") {
+        URL.revokeObjectURL(activeImageUrl);
+      }
+    };
+  }, [activeImageUrl]);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles, rejectedFiles) => {
       if (rejectedFiles.length > 0) {
-        setError("mainImage.url", {
+        setError({
           type: "custom",
           message: rejectedFiles[0].errors[0].message,
         });
       } else {
         setActiveImage(acceptedFiles[0]);
-        setActiveImageUrl(URL.createObjectURL(acceptedFiles[0]));
       }
     },
     multiple: false,
@@ -55,8 +84,8 @@ export default ({
     disabled: typeof activeImage !== "undefined",
   });
 
-  const errorDisplay = errors.mainImage?.url ? (
-    <Alert status="error">{errors.mainImage.url.message}</Alert>
+  const errorDisplay = error ? (
+    <Alert status="error">{error.message}</Alert>
   ) : (
     <></>
   );
@@ -79,44 +108,64 @@ export default ({
     </Flex>
   );
 
+  const resetDisplay = (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={() => setActiveImage(undefined)}
+      leftIcon={<span className="material-symbols-outlined">hide_image</span>}
+    >
+      Change Image
+    </Button>
+  );
+
   return (
-    <AspectRatio ratio={1.5} margin="10px">
-      <FormControl
-        isInvalid={typeof errors.mainImage?.url !== "undefined"}
-        {...getRootProps({ className: "dropzone" })}
-      >
-        <input {...getInputProps({ refKey: "ref" })} {...registerProps} />
-        {activeImageUrl === undefined ? (
-          uploadDisplay
-        ) : (
-          <Cropper
-            image={activeImageUrl}
-            crop={crop}
-            zoom={zoom}
-            aspect={aspect}
-            onCropChange={setCrop}
-            onZoomChange={setZoom}
-            maxZoom={maxZoom}
-            onMediaLoaded={(size) => {
-              console.log(size);
-              if (
-                size.naturalWidth < minImageWidth ||
-                size.naturalHeight < minImageHeight
-              ) {
-                setError("mainImage.url", {
-                  type: "custom",
-                  message: `Image must be at least ${minImageWidth}x${minImageHeight} in size`,
-                });
-                setActiveImage(undefined);
-                setActiveImageUrl(undefined);
-              } else if (size.naturalWidth > minImageWidth) {
-                setMaxZoom(size.naturalWidth / minImageWidth);
-              }
-              URL.revokeObjectURL(activeImageUrl);
-            }}
-          />
-        )}
-      </FormControl>
-    </AspectRatio>
+    <Box>
+      <AspectRatio ratio={1.5} margin="10px">
+        <FormControl
+          isInvalid={typeof error !== "undefined"}
+          {...getRootProps({ className: "dropzone" })}
+        >
+          <input {...getInputProps({ refKey: "ref" })} {...registerProps} />
+          {activeImageUrl === undefined ? (
+            uploadDisplay
+          ) : (
+            <Cropper
+              image={activeImageUrl}
+              crop={crop}
+              zoom={zoom}
+              aspect={aspect}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              maxZoom={maxZoom}
+              onCropComplete={(_croppedArea, croppedAreaPixels) => {
+                if (typeof activeImage !== "undefined") {
+                  setValue({
+                    imageFile: activeImage,
+                    imageURL: activeImageUrl,
+                    cropArea: croppedAreaPixels,
+                  });
+                }
+              }}
+              onMediaLoaded={(size) => {
+                if (
+                  size.naturalWidth < minImageWidth ||
+                  size.naturalHeight < minImageHeight
+                ) {
+                  setError({
+                    type: "custom",
+                    message: `Image must be at least ${minImageWidth}x${minImageHeight} in size`,
+                  });
+                  setActiveImage(undefined);
+                } else if (size.naturalWidth > minImageWidth) {
+                  setMaxZoom(size.naturalWidth / minImageWidth);
+                }
+              }}
+            />
+          )}
+        </FormControl>
+      </AspectRatio>
+      {typeof activeImage === "undefined" ? <></> : resetDisplay}
+    </Box>
   );
 };

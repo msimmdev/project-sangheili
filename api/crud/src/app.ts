@@ -1,5 +1,11 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+dotenv.config({ path: `.env.local`, override: true });
+
 import express, { NextFunction, Request, Response } from "express";
 import dishRouter from "./routes/dish";
+import uploadSessionRouter from "./routes/uploadSession";
 import oidcVerifyToken from "./middleware/oidc-verify-token";
 import tokenScopes from "./middleware/token-scopes";
 import tokenUser from "./middleware/token-user";
@@ -14,6 +20,7 @@ app.use(tokenUser());
 app.use(express.json());
 
 app.use("/dish", dishRouter);
+app.use("/upload-session", uploadSessionRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

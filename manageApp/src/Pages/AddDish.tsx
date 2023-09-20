@@ -10,17 +10,77 @@ import {
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Dish } from "@msimmdev/project-sangheili-types";
-import ImageUpload from "../Shared/ImageUpload";
+import ImageUpload, { ImageUploadData } from "../Shared/ImageUpload";
+
+type FormData = Dish & { mainImageFile: ImageUploadData };
+
+async function uploadImage(fileData: ImageUploadData): Promise<void> {
+  const loadedImage = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.src = fileData.imageURL;
+  });
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  if (ctx === null) {
+    return;
+  }
+
+  canvas.width = loadedImage.width;
+  canvas.height = loadedImage.height;
+  ctx.drawImage(loadedImage, 0, 0);
+
+  const croppedCanvas = document.createElement("canvas");
+  const croppedCtx = croppedCanvas.getContext("2d");
+
+  if (!croppedCtx) {
+    return;
+  }
+
+  croppedCanvas.width = fileData.cropArea.width;
+  croppedCanvas.height = fileData.cropArea.height;
+
+  // Draw the cropped image onto the new canvas
+  croppedCtx.drawImage(
+    canvas,
+    fileData.cropArea.x,
+    fileData.cropArea.y,
+    fileData.cropArea.width,
+    fileData.cropArea.height,
+    0,
+    0,
+    fileData.cropArea.width,
+    fileData.cropArea.height
+  );
+
+  const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+    croppedCanvas.toBlob((file) => {
+      if (file !== null) {
+        file.arrayBuffer().then((buf) => resolve(buf));
+      } else {
+        reject();
+      }
+    }, "image/jpeg");
+  });
+
+  console.log(buffer);
+}
 
 export default () => {
   const {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors },
-  } = useForm<Dish>();
+  } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<Dish> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    uploadImage(data.mainImageFile);
+    console.log(data);
+  };
 
   return (
     <Box className="full-page-content">
@@ -47,9 +107,10 @@ export default () => {
             </FormControl>
           </Box>
           <ImageUpload
-            registerProps={register("mainImage.url")}
-            errors={errors}
-            setError={setError}
+            registerProps={register("mainImageFile")}
+            error={errors.mainImage?.url}
+            setError={(e) => setError("mainImageFile", e)}
+            setValue={(v) => setValue("mainImageFile", v)}
             minImageWidth={1200}
             minImageHeight={800}
             aspect={1.5}
