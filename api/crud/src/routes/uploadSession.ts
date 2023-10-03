@@ -1,4 +1,5 @@
 import express from "express";
+import { randomUUID } from "crypto";
 import {
   BlobServiceClient,
   StorageSharedKeyCredential,
@@ -13,37 +14,45 @@ const accountKey =
   "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
 const sharedKeyCredential = new StorageSharedKeyCredential(account, accountKey);
 const blobServiceClient = new BlobServiceClient(
-  `http://project-sangheili-azurite-1/devstoreaccount1`,
+  `http://127.0.0.1:10000/devstoreaccount1`,
   sharedKeyCredential
 );
 
 router.post("/", async (req, res, next) => {
-  const uploadType = "dishImage";
+  if (typeof req.user === "undefined") {
+    return res.sendStatus(403);
+  }
 
-  const containerName = "testContainer";
-  const blobName = "testBlob";
+  const containerName = "fileupload";
+  const blobName = randomUUID();
 
-  const containerClient = blobServiceClient.getContainerClient(containerName);
-  const blobClient = containerClient.getBlobClient(blobName);
+  try {
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const blobClient = containerClient.getBlobClient(blobName);
 
-  const permissions = BlobSASPermissions.parse("w");
+    const permissions = BlobSASPermissions.parse("w");
 
-  const expiresOn = new Date();
-  expiresOn.setMinutes(expiresOn.getMinutes() + 15);
+    const expiresOn = new Date();
+    expiresOn.setMinutes(expiresOn.getMinutes() + 15);
 
-  const sasQueryParameters = generateBlobSASQueryParameters(
-    {
-      containerName: containerClient.containerName,
-      blobName: blobClient.name,
-      permissions: permissions,
-      expiresOn: expiresOn,
-    },
-    sharedKeyCredential
-  );
+    const sasQueryParameters = generateBlobSASQueryParameters(
+      {
+        containerName: containerClient.containerName,
+        blobName: blobClient.name,
+        permissions: permissions,
+        expiresOn: expiresOn,
+      },
+      sharedKeyCredential
+    );
 
-  res.status(200).json({
-    token: `${blobClient.url}?${sasQueryParameters}`,
-  });
+    return res.status(200).json({
+      sessionExpires: expiresOn.toJSON(),
+      uploadUrl: `${blobClient.url}?${sasQueryParameters}`,
+      uploadKey: blobName,
+    });
+  } catch (e) {
+    return next(e);
+  }
 });
 
 export default router;

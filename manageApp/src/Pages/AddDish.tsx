@@ -9,63 +9,50 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Dish } from "@msimmdev/project-sangheili-types";
-import ImageUpload, { ImageUploadData } from "../Shared/ImageUpload";
+import { useAuth } from "react-oidc-context";
+import { Dish, ImageUpload } from "@msimmdev/project-sangheili-types";
+import ImageUploadControl, {
+  ImageUploadData,
+} from "../Shared/ImageUploadControl";
+import { User } from "oidc-client-ts";
+import { BlockBlobClient } from "@azure/storage-blob";
+import { redirect } from "react-router-dom";
+
+const api_url = "http://localhost:3100";
 
 type FormData = Dish & { mainImageFile: ImageUploadData };
 
-async function uploadImage(fileData: ImageUploadData): Promise<void> {
-  const loadedImage = await new Promise<HTMLImageElement>((resolve, reject) => {
-    const image = new Image();
-    image.addEventListener("load", () => resolve(image));
-    image.addEventListener("error", (error) => reject(error));
-    image.src = fileData.imageURL;
-  });
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-
-  if (ctx === null) {
-    return;
-  }
-
-  canvas.width = loadedImage.width;
-  canvas.height = loadedImage.height;
-  ctx.drawImage(loadedImage, 0, 0);
-
-  const croppedCanvas = document.createElement("canvas");
-  const croppedCtx = croppedCanvas.getContext("2d");
-
-  if (!croppedCtx) {
-    return;
-  }
-
-  croppedCanvas.width = fileData.cropArea.width;
-  croppedCanvas.height = fileData.cropArea.height;
-
-  // Draw the cropped image onto the new canvas
-  croppedCtx.drawImage(
-    canvas,
-    fileData.cropArea.x,
-    fileData.cropArea.y,
-    fileData.cropArea.width,
-    fileData.cropArea.height,
-    0,
-    0,
-    fileData.cropArea.width,
-    fileData.cropArea.height
-  );
-
-  const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
-    croppedCanvas.toBlob((file) => {
-      if (file !== null) {
-        file.arrayBuffer().then((buf) => resolve(buf));
-      } else {
-        reject();
-      }
-    }, "image/jpeg");
+async function uploadImage(
+  fileData: ImageUploadData,
+  user: User
+): Promise<ImageUpload> {
+  const sessionResponse = await fetch(`${api_url}/upload-session`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${user.access_token}`,
+    },
   });
 
-  console.log(buffer);
+  if (!sessionResponse.ok) {
+    console.log(sessionResponse);
+    throw new Error(`Invalid file upload response: ${sessionResponse.status}}`);
+  }
+  const result = await sessionResponse.json();
+
+  const blobClient = new BlockBlobClient(result["uploadUrl"]);
+  await blobClient.uploadData(fileData.imageFile, {
+    blobHTTPHeaders: {
+      blobContentType: fileData.imageFile.type,
+    },
+    onProgress: (ev) => {
+      console.log(`Uploaded ${ev.loadedBytes} of ${fileData.imageFile.size}`);
+    },
+  });
+
+  return {
+    uploadKey: result["uploadKey"],
+    crop: fileData.cropArea,
+  };
 }
 
 export default () => {
@@ -77,8 +64,34 @@ export default () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    uploadImage(data.mainImageFile);
+  const { user } = useAuth();
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    if (typeof user !== "undefined" && user !== null) {
+      const uploadData = await uploadImage(data.mainImageFile, user);
+
+      const dishData: Dish = {
+        name: data.name,
+        description: data.description,
+        mainImage: uploadData,
+      };
+
+      const addResponse = await fetch(`${api_url}/dish`, {
+        method: "POST",
+        body: JSON.stringify(dishData),
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!addResponse.ok) {
+        console.log(addResponse);
+        throw new Error(`Invalid add dish response: ${addResponse.status}}`);
+      }
+
+      redirect("/");
+    }
     console.log(data);
   };
 
@@ -106,9 +119,9 @@ export default () => {
               />
             </FormControl>
           </Box>
-          <ImageUpload
+          <ImageUploadControl
             registerProps={register("mainImageFile")}
-            error={errors.mainImage?.url}
+            error={errors.mainImageFile?.imageURL}
             setError={(e) => setError("mainImageFile", e)}
             setValue={(v) => setValue("mainImageFile", v)}
             minImageWidth={1200}

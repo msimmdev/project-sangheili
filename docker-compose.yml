@@ -2,12 +2,13 @@ services:
   app:
     image: "node:20-alpine"
     user: "node"
+    hostname: "project-sangheili-app"
     working_dir: /home/node
     ports:
       - 127.0.0.1:3000:3000
     environment:
       NODE_ENV: development
-      MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo-1:27017/admin
+      MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo:27017/admin
     volumes:
       - ./:/home/node/devapp
     expose:
@@ -28,6 +29,7 @@ services:
   manageApp:
     image: "node:20-alpine"
     user: "node"
+    hostname: "project-sangheili-manageapp"
     working_dir: /home/node
     ports:
       - 127.0.0.1:5173:5173
@@ -59,12 +61,13 @@ services:
   api-crud:
     image: "node:20-alpine"
     user: "node"
+    hostname: "project-sangheili-api-crud"
     working_dir: /home/node
     ports:
       - 127.0.0.1:3100:3100
     environment:
       NODE_ENV: development
-      MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo-1:27017/admin
+      MONGO_CONNECTION_STRING: mongodb://root:example@project-sangheili-mongo:27017/admin
       AUTH_AUTHORITY: https://sangheili.b2clogin.com/sangheili.onmicrosoft.com/B2C_1_account/v2.0/
       AUTH_VALID_ISS: https://sangheili.b2clogin.com/1a317a16-ba37-4af9-8a64-63537fc2b34e/v2.0/
       AUTH_VALID_AUD: 76dcec81-27ef-4b4b-ad4a-e722a65963b5
@@ -93,14 +96,17 @@ services:
         npm run dev -w api/crud
   mongo:
     image: mongo
+    hostname: "project-sangheili-mongo"
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
+    hostname: azurite
     restart: always
-    command: "azurite --blobHost 127.0.0.1 --blobPort 10000 --queueHost 127.0.0.1 --queuePort 10001"
     ports:
       - "10000:10000"
       - "10001:10001"
+      - "10002:10002"

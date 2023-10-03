@@ -9,6 +9,7 @@
     "manageApp",
     "types",
     "api/crud",
-    "data/load"
+    "data/load",
+    "data/initStorage"
   ]
 }

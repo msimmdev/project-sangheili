@@ -1,10 +1,15 @@
 import { z } from "zod";
 
 const ImageSchema = z.object({
-  url: z.string().url(),
   alt: z.string(),
-  sizeX: z.number().int().positive(),
-  sizeY: z.number().int().positive(),
+  variants: z.array(
+    z.object({
+      url: z.string().url(),
+      sizeTag: z.enum(["xs", "sm", "md", "lg", "xl"]),
+      sizeX: z.number().int().positive(),
+      sizeY: z.number().int().positive(),
+    })
+  ),
 });
 
 type Image = z.infer<typeof ImageSchema>;

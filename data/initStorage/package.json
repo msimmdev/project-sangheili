@@ -1,0 +1,28 @@
+{
+  "name": "@msimmdev/project-sangheili-data-initstorage",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msimmdev/project-sangheili.git"
+  },
+  "author": "Michael Simm",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/msimmdev/project-sangheili/issues"
+  },
+  "homepage": "https://github.com/msimmdev/project-sangheili#readme",
+  "dependencies": {
+    "@azure/storage-blob": "^12.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.2",
+    "typescript": "^5.2.2"
+  }
+}
