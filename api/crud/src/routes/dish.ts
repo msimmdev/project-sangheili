@@ -10,6 +10,7 @@ import {
 } from "../persistance/dish";
 import verifyAccess from "../util/verify-access";
 import { DishFilterSchema } from "../filters/get-dishes-filter";
+import processImage from "../util/process-image";
 
 const router = express.Router();
 
@@ -98,6 +99,14 @@ router.post("/", async (req, res, next) => {
       return res.status(400).json(parseResult.error.issues);
     }
 
+    if ("fileId" in parseResult.data.mainImage) {
+      const imageData = await processImage(
+        parseResult.data.mainImage,
+        "dishimage"
+      );
+      parseResult.data.mainImage = imageData;
+    }
+
     const dish = await storeDish(parseResult.data, newResource);
 
     return res.status(201).json(dish);
@@ -126,6 +135,14 @@ router.put("/:objectId", async (req, res, next) => {
 
     if (!parseResult.success) {
       return res.status(400).json(parseResult.error.issues);
+    }
+
+    if ("fileId" in parseResult.data.mainImage) {
+      const imageData = await processImage(
+        parseResult.data.mainImage,
+        "dishimage"
+      );
+      parseResult.data.mainImage = imageData;
     }
 
     const findDish = await getDish(req.params.objectId);
@@ -186,6 +203,16 @@ router.patch("/:objectId", async (req, res, next) => {
 
     if (!parseResult.success) {
       return res.status(400).json(parseResult.error.issues);
+    }
+
+    if (typeof parseResult.data.mainImage !== "undefined") {
+      if ("fileId" in parseResult.data.mainImage) {
+        const imageData = await processImage(
+          parseResult.data.mainImage,
+          "dishimage"
+        );
+        parseResult.data.mainImage = imageData;
+      }
     }
 
     await updateDish(req.params.objectId, parseResult.data, findDish);

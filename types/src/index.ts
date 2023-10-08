@@ -6,6 +6,7 @@ import RecipeStep, { RecipeStepSchema } from "./recipe-step";
 import Dish, { DishSchema } from "./dish";
 import Image, { ImageSchema } from "./image";
 import ImageUpload, { ImageUploadSchema } from "./image-upload";
+import ImageVariantSchema, { ImageVariant } from "./image-variant";
 import { DbId, DbIdSchema, DbMeta, DbMetaSchema } from "./db";
 import { AppUserSchema, AppUser } from "./app-user";
 import {
@@ -46,4 +47,6 @@ export {
   DbMetaSchema,
   AppUser,
   AppUserSchema,
+  ImageVariant,
+  ImageVariantSchema,
 };

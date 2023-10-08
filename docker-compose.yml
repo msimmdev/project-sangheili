@@ -39,6 +39,7 @@ services:
       VITE_AUTH_CLIENTID: e290f4cc-3569-47a6-8682-986966185ea1
       VITE_AUTH_REDIRECT: http://localhost:5173/
       VITE_CRUD_API_URL: http://localhost:3100
+      VITE_UPLOAD_BASE_URL: http://127.0.0.1:10000/devstoreaccount1
     volumes:
       - ./:/home/node/devapp
     expose:
@@ -76,9 +77,11 @@ services:
       AUTH_LOCAL_SECRET: testSecret
       ADMIN_ACCOUNT_ID: 39d41a99-7e87-41e9-aa58-594f0e171dca
       STORAGE_ACCOUNT: devstoreaccount1
-      STORAGE_URL: http://127.0.0.1:10000
+      STORAGE_URL: http://project-sangheili-azurite:10000
       STORAGE_KEY: Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
       STORAGE_UPLOAD_CONTAINER: fileupload
+      STORAGE_PUBLIC_CONTAINER: publicimages
+      PUBLIC_IMAGE_BASE_URL: http://127.0.0.1:10000
     volumes:
       - ./:/home/node/devapp
     expose:

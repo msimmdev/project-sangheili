@@ -21,6 +21,7 @@ import { BlockBlobClient } from "@azure/storage-blob";
 import { ImageUpload } from "@msimmdev/project-sangheili-types";
 
 const api_url = import.meta.env.VITE_CRUD_API_URL;
+const upload_base_url = import.meta.env.VITE_UPLOAD_BASE_URL;
 
 type ImageUploadData = {
   imageFile: File;
@@ -44,7 +45,9 @@ async function uploadImage(
   }
   const result = await sessionResponse.json();
 
-  const blobClient = new BlockBlobClient(result["uploadUrl"]);
+  const blobClient = new BlockBlobClient(
+    `${upload_base_url}/${result["container"]}/${result["fileId"]}?${result["uploadParams"]}`
+  );
   await blobClient.uploadData(fileData.imageFile, {
     blobHTTPHeaders: {
       blobContentType: fileData.imageFile.type,
