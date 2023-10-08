@@ -9,12 +9,22 @@ import {
 
 const router = express.Router();
 
-const account = "devstoreaccount1";
-const accountKey =
-  "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
+const account = process.env.STORAGE_ACCOUNT;
+const accountKey = process.env.STORAGE_KEY;
+const url = process.env.STORAGE_URL;
+const uploadContainer = process.env.STORAGE_UPLOAD_CONTAINER;
+
+if (
+  typeof account === "undefined" ||
+  typeof accountKey === "undefined" ||
+  typeof url === "undefined" ||
+  typeof uploadContainer === "undefined"
+) {
+  throw new Error("Invalid Storage Configuration");
+}
 const sharedKeyCredential = new StorageSharedKeyCredential(account, accountKey);
 const blobServiceClient = new BlobServiceClient(
-  `http://127.0.0.1:10000/devstoreaccount1`,
+  `${url}/${account}`,
   sharedKeyCredential
 );
 
@@ -23,7 +33,7 @@ router.post("/", async (req, res, next) => {
     return res.sendStatus(403);
   }
 
-  const containerName = "fileupload";
+  const containerName = uploadContainer;
   const blobName = randomUUID();
 
   try {
@@ -48,7 +58,8 @@ router.post("/", async (req, res, next) => {
     return res.status(200).json({
       sessionExpires: expiresOn.toJSON(),
       uploadUrl: `${blobClient.url}?${sasQueryParameters}`,
-      uploadKey: blobName,
+      fileId: blobName,
+      container: containerName,
     });
   } catch (e) {
     return next(e);

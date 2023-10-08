@@ -10,50 +10,16 @@ import {
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
-import { Dish, ImageUpload } from "@msimmdev/project-sangheili-types";
+import { Dish } from "@msimmdev/project-sangheili-types";
 import ImageUploadControl, {
   ImageUploadData,
+  uploadImage,
 } from "../Shared/ImageUploadControl";
-import { User } from "oidc-client-ts";
-import { BlockBlobClient } from "@azure/storage-blob";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const api_url = "http://localhost:3100";
+const api_url = import.meta.env.VITE_CRUD_API_URL;
 
 type FormData = Dish & { mainImageFile: ImageUploadData };
-
-async function uploadImage(
-  fileData: ImageUploadData,
-  user: User
-): Promise<ImageUpload> {
-  const sessionResponse = await fetch(`${api_url}/upload-session`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${user.access_token}`,
-    },
-  });
-
-  if (!sessionResponse.ok) {
-    console.log(sessionResponse);
-    throw new Error(`Invalid file upload response: ${sessionResponse.status}}`);
-  }
-  const result = await sessionResponse.json();
-
-  const blobClient = new BlockBlobClient(result["uploadUrl"]);
-  await blobClient.uploadData(fileData.imageFile, {
-    blobHTTPHeaders: {
-      blobContentType: fileData.imageFile.type,
-    },
-    onProgress: (ev) => {
-      console.log(`Uploaded ${ev.loadedBytes} of ${fileData.imageFile.size}`);
-    },
-  });
-
-  return {
-    uploadKey: result["uploadKey"],
-    crop: fileData.cropArea,
-  };
-}
 
 export default () => {
   const {
@@ -63,6 +29,7 @@ export default () => {
     setValue,
     formState: { errors },
   } = useForm<FormData>();
+  const navigate = useNavigate();
 
   const { user } = useAuth();
 
@@ -86,13 +53,12 @@ export default () => {
       });
 
       if (!addResponse.ok) {
-        console.log(addResponse);
+        console.error(addResponse);
         throw new Error(`Invalid add dish response: ${addResponse.status}}`);
       }
 
-      redirect("/");
+      return navigate("/");
     }
-    console.log(data);
   };
 
   return (
@@ -121,8 +87,8 @@ export default () => {
           </Box>
           <ImageUploadControl
             registerProps={register("mainImageFile")}
-            error={errors.mainImageFile?.imageURL}
-            setError={(e) => setError("mainImageFile", e)}
+            error={errors.mainImageFile?.imageFile}
+            setError={(e) => setError("mainImageFile.imageFile", e)}
             setValue={(v) => setValue("mainImageFile", v)}
             minImageWidth={1200}
             minImageHeight={800}

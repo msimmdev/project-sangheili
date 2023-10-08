@@ -4,28 +4,37 @@ import {
   CorsRule,
 } from "@azure/storage-blob";
 
-const accountName = "devstoreaccount1";
-const accountKey =
-  "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==";
-const containerName = "fileupload";
+const account = process.env.STORAGE_ACCOUNT;
+const accountKey = process.env.STORAGE_KEY;
+const url = "http://azurite:10000";
+const uploadContainer = process.env.STORAGE_UPLOAD_CONTAINER;
 
 async function createContainerWithCors(): Promise<void> {
+  if (
+    typeof account === "undefined" ||
+    typeof accountKey === "undefined" ||
+    typeof url === "undefined" ||
+    typeof uploadContainer === "undefined"
+  ) {
+    throw new Error("Invalid Storage Configuration");
+  }
+
   const sharedKeyCredential = new StorageSharedKeyCredential(
-    accountName,
+    account,
     accountKey
   );
   const blobServiceClient = new BlobServiceClient(
-    `http://127.0.0.1:10000/devstoreaccount1`,
+    `${url}/${account}`,
     sharedKeyCredential
   );
 
   // Create the container
-  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const containerClient = blobServiceClient.getContainerClient(uploadContainer);
   if (!(await containerClient.exists())) {
     await containerClient.create();
-    console.log(`Container "${containerName}" created successfully.`);
+    console.log(`Container "${uploadContainer}" created successfully.`);
   } else {
-    console.log(`Container "${containerName}" already exists.`);
+    console.log(`Container "${uploadContainer}" already exists.`);
   }
 
   // Set up CORS rules

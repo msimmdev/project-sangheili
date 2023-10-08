@@ -1,8 +1,11 @@
 {
   "name": "@msimmdev/project-sangheili",
   "scripts": {
-    "start": "docker compose up -d && npm run loadusers",
-    "loadusers": "docker exec -d project-sangheili-api-crud-1 npm run start -w data/load"
+    "start": "docker compose up -d && npm run loadusers && npm run initstorage",
+    "stop": "docker compose stop",
+    "down": "docker compose down",
+    "loadusers": "docker exec -d project-sangheili-api-crud-1 npm run start -w data/load",
+    "initstorage": "docker exec -d project-sangheili-api-crud-1 npm run start -w data/initStorage"
   },
   "workspaces": [
     "app",

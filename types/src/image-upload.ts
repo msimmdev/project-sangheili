@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 const ImageUploadSchema = z.object({
-  uploadKey: z.string().uuid(),
+  fileId: z.string().uuid(),
+  container: z.string().nonempty(),
   crop: z.object({
     width: z.number().int().positive(),
     height: z.number().int().positive(),

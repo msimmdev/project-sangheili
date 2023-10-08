@@ -38,6 +38,7 @@ services:
       VITE_AUTH_AUTHORITY: https://sangheili.b2clogin.com/sangheili.onmicrosoft.com/B2C_1_account/v2.0/
       VITE_AUTH_CLIENTID: e290f4cc-3569-47a6-8682-986966185ea1
       VITE_AUTH_REDIRECT: http://localhost:5173/
+      VITE_CRUD_API_URL: http://localhost:3100
     volumes:
       - ./:/home/node/devapp
     expose:
@@ -74,6 +75,10 @@ services:
       AUTH_ALLOW_LOCAL_TOKENS: true
       AUTH_LOCAL_SECRET: testSecret
       ADMIN_ACCOUNT_ID: 39d41a99-7e87-41e9-aa58-594f0e171dca
+      STORAGE_ACCOUNT: devstoreaccount1
+      STORAGE_URL: http://127.0.0.1:10000
+      STORAGE_KEY: Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+      STORAGE_UPLOAD_CONTAINER: fileupload
     volumes:
       - ./:/home/node/devapp
     expose:
@@ -96,6 +101,7 @@ services:
         npm run dev -w api/crud
   mongo:
     image: mongo
+    container_name: "project-sangheili-mongo"
     hostname: "project-sangheili-mongo"
     restart: always
     environment:
@@ -103,8 +109,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
-    container_name: "azurite"
-    hostname: azurite
+    container_name: "project-sangheili-azurite"
+    hostname: project-sangheili-azurite
     restart: always
     ports:
       - "10000:10000"
