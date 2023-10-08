@@ -6,7 +6,7 @@ import {
 
 const account = process.env.STORAGE_ACCOUNT;
 const accountKey = process.env.STORAGE_KEY;
-const url = "http://azurite:10000";
+const url = "http://project-sangheili-azurite:10000";
 const uploadContainer = process.env.STORAGE_UPLOAD_CONTAINER;
 
 async function createContainerWithCors(): Promise<void> {
