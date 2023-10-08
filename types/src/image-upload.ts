@@ -6,8 +6,8 @@ const ImageUploadSchema = z.object({
   crop: z.object({
     width: z.number().int().positive(),
     height: z.number().int().positive(),
-    x: z.number().int().positive(),
-    y: z.number().int().positive(),
+    x: z.number().int().nonnegative(),
+    y: z.number().int().nonnegative(),
   }),
 });
 

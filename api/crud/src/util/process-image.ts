@@ -54,6 +54,7 @@ async function processImage(
       sizeX: metadata.width ?? 0,
       sizeY: metadata.height ?? 0,
     });
+    await uploadClient.deleteIfExists();
   }
 
   return {
