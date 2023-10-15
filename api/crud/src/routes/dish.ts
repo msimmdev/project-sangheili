@@ -68,7 +68,6 @@ router.get("/:objectId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  console.log(req.user);
   try {
     if (!req.hasScope("Dishes.ReadWrite")) {
       return res.sendStatus(403);

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { getAppUser } from "../persistance/app-user";
 
-function tokenUser(): (
+function automationClient(): (
   req: Request,
   res: Response,
   next: NextFunction
@@ -9,14 +8,17 @@ function tokenUser(): (
   return async (req, res, next) => {
     if (typeof req.userToken !== "undefined") {
       if (typeof req.userToken.sub !== "undefined") {
-        let user = await getAppUser(req.userToken.sub);
-        if (user !== null) {
-          req.user = user;
-        }
+        req.user = {
+          userId: req.userToken.sub,
+          email: "example@example.com",
+          name: "Automation User",
+          roles: ["SuperAdmin"],
+        };
       }
     }
+    req.hasScope = () => true;
     next();
   };
 }
 
-export default tokenUser;
+export default automationClient;

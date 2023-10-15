@@ -1,6 +1,6 @@
 import express from "express";
 import { randomUUID } from "crypto";
-import { getBlobClient, getUploadParams } from "../storage";
+import { getUploadParams } from "../storage";
 
 const router = express.Router();
 
@@ -18,7 +18,6 @@ router.post("/", async (req, res, next) => {
   const blobName = randomUUID();
 
   try {
-    const blobClient = getBlobClient(uploadContainer, blobName);
     const sasQueryParameters = getUploadParams(uploadContainer, blobName);
 
     return res.status(200).json({

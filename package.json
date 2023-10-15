@@ -4,8 +4,8 @@
     "start": "docker compose up -d && npm run loadusers && npm run initstorage",
     "stop": "docker compose stop",
     "down": "docker compose down",
-    "loadusers": "docker exec -d project-sangheili-api-crud-1 npm run start -w data/load",
-    "initstorage": "docker exec -d project-sangheili-api-crud-1 npm run start -w data/initStorage"
+    "loadusers": "docker exec -d project-sangheili-data-load npm run start -w data/load",
+    "initstorage": "docker exec -d project-sangheili-data-load npm run start -w data/initStorage"
   },
   "workspaces": [
     "app",
@@ -13,6 +13,7 @@
     "types",
     "api/crud",
     "data/load",
-    "data/initStorage"
+    "data/initStorage",
+    "data/loadDishes"
   ]
 }

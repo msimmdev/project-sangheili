@@ -10,6 +10,7 @@ import uploadSessionRouter from "./routes/uploadSession";
 import oidcVerifyToken from "./middleware/oidc-verify-token";
 import tokenScopes from "./middleware/token-scopes";
 import tokenUser from "./middleware/token-user";
+import automationClient from "./middleware/automation-client";
 
 const app = express();
 const port = 3100;
@@ -18,7 +19,11 @@ app.use(cors());
 
 app.use(oidcVerifyToken());
 app.use(tokenScopes());
-app.use(tokenUser());
+if (process.env.AUTH_AUTOMATION_MODE === "true") {
+  app.use(automationClient());
+} else {
+  app.use(tokenUser());
+}
 
 app.use(express.json());
 

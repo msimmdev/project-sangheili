@@ -32,6 +32,7 @@ async function processImage(
   const uploadClient = getBlobClient(uploadData.container, uploadData.fileId);
 
   const fileBuffer = await uploadClient.downloadToBuffer();
+
   const file = sharp(fileBuffer).extract({
     left: uploadData.crop.x,
     top: uploadData.crop.y,
