@@ -12,6 +12,7 @@ if (typeof uploadContainer === "undefined") {
 
 router.post("/", async (req, res, next) => {
   if (typeof req.user === "undefined") {
+    console.log(req.user);
     return res.sendStatus(403);
   }
 

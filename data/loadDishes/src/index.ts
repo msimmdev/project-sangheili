@@ -4,6 +4,9 @@ import {
   StorageSharedKeyCredential,
 } from "@azure/storage-blob";
 import { randomUUID } from "crypto";
+import OpenAI from "openai";
+import sharp from "sharp";
+import { exit } from "process";
 
 const letters = [
   "a",
@@ -39,6 +42,8 @@ const accountKey = process.env.STORAGE_KEY;
 const url = "http://project-sangheili-azurite:10000";
 const uploadContainer = process.env.STORAGE_UPLOAD_CONTAINER;
 
+const openai = new OpenAI();
+
 if (
   typeof account === "undefined" ||
   typeof accountKey === "undefined" ||
@@ -57,8 +62,8 @@ const blobServiceClient = new BlobServiceClient(
 const containerClient = blobServiceClient.getContainerClient(uploadContainer);
 
 async function loadDishData(): Promise<void> {
-  const access_token = await getAccessToken();
   for (const letter of letters) {
+    const access_token = await getAccessToken();
     const response = await fetch(
       "https://www.themealdb.com/api/json/v1/1/search.php?f=" + letter
     );
@@ -74,6 +79,29 @@ async function loadDishData(): Promise<void> {
     const mealData = jsonData["meals"] as Array<any>;
 
     for (const meal of mealData) {
+      const getDishparams = new URLSearchParams();
+      getDishparams.append("name[$eq]", meal["strMeal"]);
+      getDishparams.append("owner[$eq]", "$me");
+      getDishparams.append("limit", "1");
+      const getResponse = await fetch(
+        "http://localhost:3100/dish?" + getDishparams.toString(),
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      );
+
+      if (!getResponse.ok) {
+        throw new Error(`Get error response ${getResponse.status}`);
+      }
+
+      const getDishData = (await getResponse.json()) as Array<any>;
+      if (getDishData.length === 1) {
+        continue;
+      }
+
       const imageResponse = await fetch(meal["strMealThumb"]);
       if (!imageResponse.ok) {
         throw new Error("Invalid Image Response: " + imageResponse.status);
@@ -81,26 +109,42 @@ async function loadDishData(): Promise<void> {
       const imageData = await imageResponse.blob();
       const imageBuffer = await imageData.arrayBuffer();
 
+      const imageObj = sharp(imageBuffer);
+      const imageMeta = await imageObj.metadata();
+
       const blobName = randomUUID();
 
-      containerClient
+      await containerClient
         .getBlobClient(blobName)
         .getBlockBlobClient()
         .uploadData(imageBuffer, {
           blobHTTPHeaders: { blobContentType: imageData.type },
         });
 
+      const dishDescriptionResponse = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a food website author. Respond only with single paragraph descriptions to the type of dish named by the user.",
+          },
+          { role: "user", content: meal["strMeal"] },
+        ],
+      });
+
       const dishData: Dish = {
         name: meal["strMeal"],
-        description: meal["strTags"],
+        description:
+          dishDescriptionResponse.choices[0].message.content ?? meal["strTags"],
         mainImage: {
           fileId: blobName,
           container: uploadContainer ?? "",
           crop: {
-            y: 117,
+            y: imageMeta.width ? Math.round(imageMeta.width / 6) : 117,
             x: 0,
-            width: 700,
-            height: 467,
+            width: imageMeta.width ?? 700,
+            height: imageMeta.width ? Math.round(imageMeta.width / 1.5) : 467,
           },
         },
       };
@@ -115,8 +159,11 @@ async function loadDishData(): Promise<void> {
       });
 
       if (!response.ok) {
+        console.log(dishData);
+        console.log(meal);
         console.error(`Error response ${response.status}`);
         console.error(await response.text());
+        throw new Error(`Error response ${response.status}`);
       }
     }
   }
