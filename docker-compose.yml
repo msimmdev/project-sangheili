@@ -126,6 +126,10 @@ services:
       STORAGE_UPLOAD_CONTAINER: fileupload
       STORAGE_PUBLIC_CONTAINER: publicimages
       PUBLIC_IMAGE_BASE_URL: http://127.0.0.1:10000
+      CRUD_API_URL: http://localhost:3100
+      TOKEN_SCOPE: https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/.default
+      TOKEN_URL: https://login.microsoftonline.com/1a317a16-ba37-4af9-8a64-63537fc2b34e/oauth2/v2.0/token
+      AD_CLIENT_ID: 5c78529d-ae39-45bc-b39c-51b22c009799
     volumes:
       - ./:/home/node/devapp
     expose:

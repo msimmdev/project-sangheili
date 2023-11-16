@@ -38,7 +38,12 @@ const letters = [
 
 const account = process.env.STORAGE_ACCOUNT;
 const accountKey = process.env.STORAGE_KEY;
-const url = "http://project-sangheili-azurite:10000";
+const url = process.env.STORAGE_URL;
+const apiUrl = process.env.CRUD_API_URL;
+const tokenScope = process.env.TOKEN_SCOPE;
+const tokenUrl = process.env.TOKEN_URL;
+const adClientId = process.env.AD_CLIENT_ID;
+const adClientSecret = process.env.AD_CLIENT_SECRET;
 const uploadContainer = process.env.STORAGE_UPLOAD_CONTAINER;
 
 const openai = new OpenAI();
@@ -47,6 +52,7 @@ if (
   typeof account === "undefined" ||
   typeof accountKey === "undefined" ||
   typeof url === "undefined" ||
+  typeof apiUrl === "undefined" ||
   typeof uploadContainer === "undefined"
 ) {
   throw new Error("Invalid Storage Configuration");
@@ -83,7 +89,7 @@ async function loadDishData(): Promise<void> {
       getDishparams.append("owner[$eq]", "$me");
       getDishparams.append("limit", "1");
       const getResponse = await fetch(
-        "http://localhost:3100/dish?" + getDishparams.toString(),
+        apiUrl + "/dish?" + getDishparams.toString(),
         {
           method: "GET",
           headers: {
@@ -148,7 +154,7 @@ async function loadDishData(): Promise<void> {
         },
       };
 
-      const response = await fetch("http://localhost:3100/dish", {
+      const response = await fetch(apiUrl + "/dish", {
         method: "POST",
         body: JSON.stringify(dishData),
         headers: {
@@ -167,31 +173,30 @@ async function loadDishData(): Promise<void> {
 }
 
 async function getAccessToken() {
+  if (
+    typeof tokenScope === "undefined" ||
+    typeof tokenUrl === "undefined" ||
+    typeof adClientId === "undefined" ||
+    typeof adClientSecret === "undefined"
+  ) {
+    throw new Error("Invalid Storage Configuration");
+  }
+
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-  myHeaders.append(
-    "Cookie",
-    "fpc=ApJvBINMt9dJq1Gc1GSXRconYzKCAQAAAP1KvtwOAAAA; stsservicecookie=estsfd; x-ms-gateway-slice=estsfd"
-  );
 
   const urlencoded = new URLSearchParams();
   urlencoded.append("grant_type", "client_credentials");
-  urlencoded.append(
-    "scope",
-    "https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/.default"
-  );
-  urlencoded.append("client_id", "5c78529d-ae39-45bc-b39c-51b22c009799");
-  urlencoded.append("client_secret", process.env.AD_CLIENT_SECRET ?? "");
+  urlencoded.append("scope", tokenScope);
+  urlencoded.append("client_id", adClientId);
+  urlencoded.append("client_secret", adClientSecret);
 
-  const response = await fetch(
-    "https://login.microsoftonline.com/1a317a16-ba37-4af9-8a64-63537fc2b34e/oauth2/v2.0/token",
-    {
-      method: "POST",
-      headers: myHeaders,
-      body: urlencoded,
-      redirect: "follow",
-    }
-  );
+  const response = await fetch(tokenUrl, {
+    method: "POST",
+    headers: myHeaders,
+    body: urlencoded,
+    redirect: "follow",
+  });
 
   if (!response.ok) {
     throw new Error(`Invalid Token Response ${response.status}`);
