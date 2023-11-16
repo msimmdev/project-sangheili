@@ -152,11 +152,13 @@ services:
         mkdir data/loadDishes
         cp /home/node/devapp/data/loadDishes/*.json /home/node/data/loadDishes/
         ln -Ts /home/node/devapp/data/loadDishes/src ./data/loadDishes/src
+        ln -Ts /home/node/devapp/data/loadDishes/testData  ./data/loadDishes/testData
         npm ci
         npm run build -w types
         npm run dev -w api/crud
     secrets:
       - openai-api-key
+      - ad-b2c-client
   mongo:
     image: mongo
     container_name: "project-sangheili-mongo"

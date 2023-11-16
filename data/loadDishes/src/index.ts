@@ -158,8 +158,6 @@ async function loadDishData(): Promise<void> {
       });
 
       if (!response.ok) {
-        console.log(dishData);
-        console.log(meal);
         console.error(`Error response ${response.status}`);
         console.error(await response.text());
         throw new Error(`Error response ${response.status}`);

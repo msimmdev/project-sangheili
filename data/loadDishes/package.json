@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "source /run/secrets/ad-b2c-client && source /run/secrets/openai-api-key && npm run build && node dist/index.js",
+    "loadtest": "source /run/secrets/ad-b2c-client && npm run build && node dist/load-static.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
