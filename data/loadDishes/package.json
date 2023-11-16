@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/index.js",
+    "start": "source /run/secrets/openai-api-key && npm run build && node dist/index.js",
+    "openai": "source /run/secrets/openai-api-key && npm run build && node dist/openai-test.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
