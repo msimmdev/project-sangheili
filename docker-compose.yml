@@ -177,3 +177,5 @@ services:
 secrets:
   openai-api-key:
     file: ./secrets/openai-api-key.sh
+  ad-b2c-client:
+    file: ./secrets/ad-b2c-client.sh

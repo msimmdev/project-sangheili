@@ -6,7 +6,6 @@ import {
 import { randomUUID } from "crypto";
 import OpenAI from "openai";
 import sharp from "sharp";
-import { exit } from "process";
 
 const letters = [
   "a",
@@ -184,10 +183,7 @@ async function getAccessToken() {
     "https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/.default"
   );
   urlencoded.append("client_id", "5c78529d-ae39-45bc-b39c-51b22c009799");
-  urlencoded.append(
-    "client_secret",
-    "bCU8Q~BaJ6DywNyyClQ64wcZ4quuFdOuq783bda7"
-  );
+  urlencoded.append("client_secret", process.env.AD_CLIENT_SECRET ?? "");
 
   const response = await fetch(
     "https://login.microsoftonline.com/1a317a16-ba37-4af9-8a64-63537fc2b34e/oauth2/v2.0/token",
