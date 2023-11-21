@@ -14,6 +14,8 @@
     "api/crud",
     "data/load",
     "data/initStorage",
-    "data/loadDishes"
+    "data/loadDishes",
+    "sharedComponents",
+    "demoSharedComponents"
   ]
 }

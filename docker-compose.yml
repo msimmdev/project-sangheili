@@ -52,6 +52,9 @@ services:
         mkdir types
         cp /home/node/devapp/types/*.json /home/node/types/
         ln -Ts /home/node/devapp/types/src ./types/src
+        mkdir sharedComponents
+        cp /home/node/devapp/sharedComponents/*.json /home/node/sharedComponents/
+        ln -Ts /home/node/devapp/sharedComponents/src ./sharedComponents/src
         mkdir manageApp
         cp /home/node/devapp/manageApp/*.json /home/node/manageApp/
         cp /home/node/devapp/manageApp/*.html /home/node/manageApp/
@@ -59,6 +62,7 @@ services:
         ln -Ts /home/node/devapp/manageApp/src ./manageApp/src
         ln -Ts /home/node/devapp/manageApp/public ./manageApp/public
         npm ci
+        npm run build -w sharedComponents
         npm run dev -w manageApp -- --port 5173 --strictPort --host
   api-crud:
     image: "node:20-alpine"
