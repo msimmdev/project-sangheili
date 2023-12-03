@@ -32,15 +32,30 @@ export default () => {
       <TabPanels>
         <TabPanel padding="25px">
           <SkipNavContent />
-          <DishResultList tab={tab} page={page} perPage={perPage} />
+          <DishResultList
+            tab={tab}
+            page={page}
+            perPage={perPage}
+            filter="owned"
+          />
         </TabPanel>
-        <TabPanel>
+        <TabPanel padding="25px">
           <SkipNavContent />
-          Mates
+          <DishResultList
+            tab={tab}
+            page={page}
+            perPage={perPage}
+            filter="shared"
+          />
         </TabPanel>
-        <TabPanel>
+        <TabPanel padding="25px">
           <SkipNavContent />
-          Everyone
+          <DishResultList
+            tab={tab}
+            page={page}
+            perPage={perPage}
+            filter="all"
+          />
         </TabPanel>
       </TabPanels>
     </Tabs>
