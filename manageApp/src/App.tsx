@@ -1,7 +1,13 @@
 import { Outlet } from "react-router-dom";
 import { useAuth, hasAuthParams } from "react-oidc-context";
 import { useEffect } from "react";
-import { Box, AbsoluteCenter, CircularProgress, Alert } from "@chakra-ui/react";
+import {
+  Box,
+  AbsoluteCenter,
+  CircularProgress,
+  Alert,
+  SkipNavLink,
+} from "@chakra-ui/react";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -37,6 +43,7 @@ function App() {
   if (isAuthenticated) {
     return (
       <>
+        <SkipNavLink>Skip to Content</SkipNavLink>
         <Header />
         <main className="container">
           <Outlet />
