@@ -77,7 +77,12 @@ export default ({
       for (const dish of dishList) {
         dishDisplay.push(
           <WrapItem maxWidth={300}>
-            <DishResult {...dish} />
+            <DishResult
+              dish={dish}
+              layout="vertical"
+              withLink={true}
+              imgSize="sm"
+            />
           </WrapItem>
         );
       }

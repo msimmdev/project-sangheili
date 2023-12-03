@@ -1,4 +1,4 @@
-import { AddDish, ManageDishes } from "./Pages";
+import { AddDish, DishDetails, ManageDishes } from "./Pages";
 
 export default [
   {
@@ -8,5 +8,9 @@ export default [
   {
     path: "dishes/add",
     element: <AddDish />,
+  },
+  {
+    path: "dish/:dishId",
+    element: <DishDetails />,
   },
 ];
