@@ -13,16 +13,21 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { Dish, DbId } from "@msimmdev/project-sangheili-types";
+import InlineEdit from "./InlineEdit";
 
 export default ({
   dish,
   layout,
+  editControl,
+  editSubmit,
   withLink,
   imgSize,
   title,
 }: {
   dish: Dish & DbId;
   layout: "horizontal" | "vertical";
+  editControl?: boolean;
+  editSubmit?: (updateValue: Partial<Dish>) => Promise<void>;
   withLink?: boolean;
   imgSize: "xs" | "sm" | "md" | "lg" | "xl";
   title?: As;
@@ -62,11 +67,20 @@ export default ({
     </CardHeader>
   );
 
-  const description = (
+  let description = (
     <Text {...(layout === "vertical" ? { noOfLines: 5 } : {})}>
       {dish.description}
     </Text>
   );
+
+  if (editControl && typeof editSubmit !== "undefined") {
+    description = (
+      <InlineEdit
+        defaultValue={dish.description}
+        onSubmit={(val) => editSubmit({ description: val })}
+      />
+    );
+  }
 
   let content = <></>;
 
@@ -84,7 +98,7 @@ export default ({
     content = (
       <Card direction="row">
         {img}
-        <Stack>
+        <Stack width="100%">
           {header}
           <CardBody>{description}</CardBody>
         </Stack>

@@ -90,7 +90,13 @@ export default ({
       let prevButton = <></>;
       if (page !== 1) {
         prevButton = (
-          <Button as={Link} to={`/dishes/${tab}/${perPage}/${page - 1}`}>
+          <Button
+            as={Link}
+            to={`/dishes/${tab}/${perPage}/${page - 1}`}
+            leftIcon={
+              <span className="material-symbols-outlined">arrow_back</span>
+            }
+          >
             Prev
           </Button>
         );
@@ -99,7 +105,13 @@ export default ({
       let nextButton = <></>;
       if (dishList.length === perPage) {
         nextButton = (
-          <Button as={Link} to={`/dishes/${tab}/${perPage}/${page + 1}`}>
+          <Button
+            as={Link}
+            to={`/dishes/${tab}/${perPage}/${page + 1}`}
+            rightIcon={
+              <span className="material-symbols-outlined">arrow_forward</span>
+            }
+          >
             Next
           </Button>
         );

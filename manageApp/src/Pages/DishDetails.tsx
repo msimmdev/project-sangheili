@@ -12,6 +12,21 @@ export default () => {
   const [dish, setDish] = useState<Dish & DbId>();
   const [error, setError] = useState<Error>();
 
+  async function updateDish(updateDishId: string, data: Partial<Dish>) {
+    const response = await fetch(`http://localhost:3100/dish/${updateDishId}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: "Bearer " + auth.user?.access_token,
+      },
+    });
+
+    if (!response.ok) {
+      console.error("Invalid update response", response);
+      throw new Error("Unable to update dish");
+    }
+  }
+
   useEffect(() => {
     fetch(`http://localhost:3100/dish/${dishId}`, {
       headers: {
@@ -36,6 +51,10 @@ export default () => {
       });
   }, []);
 
+  if (typeof dishId === "undefined") {
+    return <>ERROR</>;
+  }
+
   let content;
   if (isLoading) {
     content = <Spinner />;
@@ -43,7 +62,14 @@ export default () => {
     content = <>ERROR</>;
   } else if (typeof dish !== "undefined") {
     content = (
-      <DishResult dish={dish} layout="horizontal" imgSize="lg" title="h1" />
+      <DishResult
+        dish={dish}
+        layout="horizontal"
+        imgSize="lg"
+        title="h1"
+        editControl={true}
+        editSubmit={async (updateData) => await updateDish(dishId, updateData)}
+      />
     );
   }
 

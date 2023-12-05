@@ -5,7 +5,8 @@
     "stop": "docker compose stop",
     "down": "docker compose down",
     "loadusers": "docker exec project-sangheili-data-load npm run start -w data/load",
-    "initstorage": "docker exec project-sangheili-data-load npm run start -w data/initStorage"
+    "initstorage": "docker exec project-sangheili-data-load npm run start -w data/initStorage",
+    "loadtestdata": "docker exec project-sangheili-data-load npm run loadtest -w data/loadDishes"
   },
   "workspaces": [
     "app",
