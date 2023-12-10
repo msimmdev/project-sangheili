@@ -6,6 +6,8 @@ import {
   WrapItem,
   Flex,
   Spacer,
+  ButtonGroup,
+  Center,
 } from "@chakra-ui/react";
 import { DbId, Dish } from "@msimmdev/project-sangheili-types";
 import { useEffect, useState } from "react";
@@ -70,8 +72,58 @@ export default ({
   } else if (error) {
     content = <>ERROR</>;
   } else if (typeof dishList !== "undefined") {
+    const prevButton = (
+      <Button
+        as={page === 1 ? undefined : Link}
+        to={`/dishes/${tab}/${perPage}/${page - 1}`}
+        isDisabled={page === 1}
+        leftIcon={<span className="material-symbols-outlined">arrow_back</span>}
+      >
+        Prev
+      </Button>
+    );
+
+    const nextButton = (
+      <Button
+        as={dishList.length !== perPage ? undefined : Link}
+        to={`/dishes/${tab}/${perPage}/${page + 1}`}
+        isDisabled={dishList.length !== perPage}
+        rightIcon={
+          <span className="material-symbols-outlined">arrow_forward</span>
+        }
+      >
+        Next
+      </Button>
+    );
+
+    const addButton = (
+      <Button
+        as={Link}
+        to="/dishes/add"
+        leftIcon={<span className="material-symbols-outlined">add</span>}
+      >
+        Add New Dish
+      </Button>
+    );
+
+    const resultHeader = (
+      <Flex paddingBottom="10px">
+        <ButtonGroup>
+          {prevButton}
+          {nextButton}
+        </ButtonGroup>
+        <Spacer />
+        {addButton}
+      </Flex>
+    );
+
     if (dishList.length === 0) {
-      content = <>No Dishes to Display</>;
+      content = (
+        <Box>
+          {resultHeader}
+          <Center>No Dishes to Display</Center>
+        </Box>
+      );
     } else {
       const dishDisplay: JSX.Element[] = [];
       for (const dish of dishList) {
@@ -87,48 +139,15 @@ export default ({
         );
       }
 
-      let prevButton = <></>;
-      if (page !== 1) {
-        prevButton = (
-          <Button
-            as={Link}
-            to={`/dishes/${tab}/${perPage}/${page - 1}`}
-            leftIcon={
-              <span className="material-symbols-outlined">arrow_back</span>
-            }
-          >
-            Prev
-          </Button>
-        );
-      }
-
-      let nextButton = <></>;
-      if (dishList.length === perPage) {
-        nextButton = (
-          <Button
-            as={Link}
-            to={`/dishes/${tab}/${perPage}/${page + 1}`}
-            rightIcon={
-              <span className="material-symbols-outlined">arrow_forward</span>
-            }
-          >
-            Next
-          </Button>
-        );
-      }
-
       content = (
         <Box>
-          <Flex paddingBottom="10px">
-            {prevButton}
-            <Spacer />
-            {nextButton}
-          </Flex>
+          {resultHeader}
           <Wrap spacing="10px">{dishDisplay}</Wrap>
           <Flex paddingTop="10px">
-            {prevButton}
-            <Spacer />
-            {nextButton}
+            <ButtonGroup>
+              {prevButton}
+              {nextButton}
+            </ButtonGroup>
           </Flex>
         </Box>
       );

@@ -1,7 +1,13 @@
-import { Box, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Spinner,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useAuth } from "react-oidc-context";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { DbId, Dish } from "@msimmdev/project-sangheili-types";
 import DishResult from "../Components/DishResult";
 
@@ -62,14 +68,28 @@ export default () => {
     content = <>ERROR</>;
   } else if (typeof dish !== "undefined") {
     content = (
-      <DishResult
-        dish={dish}
-        layout="horizontal"
-        imgSize="lg"
-        title="h1"
-        editControl={true}
-        editSubmit={async (updateData) => await updateDish(dishId, updateData)}
-      />
+      <>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <BreadcrumbLink as={Link} to="/dishes">
+              Browse Dishes
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem isCurrentPage>
+            <BreadcrumbLink>{dish.name}</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <DishResult
+          dish={dish}
+          layout="horizontal"
+          imgSize="lg"
+          title="h1"
+          editControl={true}
+          editSubmit={async (updateData) =>
+            await updateDish(dishId, updateData)
+          }
+        />
+      </>
     );
   }
 
