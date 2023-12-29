@@ -5,6 +5,9 @@ import {
   Tab,
   TabPanel,
   SkipNavContent,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react";
 import DishResultList from "../Components/DishResultList";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,46 +21,54 @@ export default () => {
   const perPage = params.perPage ? parseInt(params.perPage) : 20;
 
   return (
-    <Tabs
-      isManual
-      isLazy
-      index={tab}
-      onChange={(index) => navigate("/dishes/" + index)}
-    >
-      <TabList>
-        <Tab>My Dishes</Tab>
-        <Tab>Shared Dishes</Tab>
-        <Tab>All Dishes</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel padding="25px">
-          <SkipNavContent />
-          <DishResultList
-            tab={tab}
-            page={page}
-            perPage={perPage}
-            filter="owned"
-          />
-        </TabPanel>
-        <TabPanel padding="25px">
-          <SkipNavContent />
-          <DishResultList
-            tab={tab}
-            page={page}
-            perPage={perPage}
-            filter="shared"
-          />
-        </TabPanel>
-        <TabPanel padding="25px">
-          <SkipNavContent />
-          <DishResultList
-            tab={tab}
-            page={page}
-            perPage={perPage}
-            filter="all"
-          />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <>
+      <Breadcrumb padding="0.375rem">
+        <BreadcrumbItem isCurrentPage color="copper.600" fontWeight="bold">
+          <BreadcrumbLink>Browse Dishes</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
+      <Tabs
+        isManual
+        isLazy
+        index={tab}
+        onChange={(index) => navigate("/dishes/" + index)}
+        colorScheme="copper"
+      >
+        <TabList>
+          <Tab>My Dishes</Tab>
+          <Tab>Shared Dishes</Tab>
+          <Tab>All Dishes</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel padding="25px">
+            <SkipNavContent />
+            <DishResultList
+              tab={tab}
+              page={page}
+              perPage={perPage}
+              filter="owned"
+            />
+          </TabPanel>
+          <TabPanel padding="25px">
+            <SkipNavContent />
+            <DishResultList
+              tab={tab}
+              page={page}
+              perPage={perPage}
+              filter="shared"
+            />
+          </TabPanel>
+          <TabPanel padding="25px">
+            <SkipNavContent />
+            <DishResultList
+              tab={tab}
+              page={page}
+              perPage={perPage}
+              filter="all"
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </>
   );
 };

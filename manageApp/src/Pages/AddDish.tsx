@@ -77,13 +77,13 @@ export default () => {
 
   return (
     <>
-      <Breadcrumb>
-        <BreadcrumbItem>
+      <Breadcrumb padding="0.375rem">
+        <BreadcrumbItem color="almond.600">
           <BreadcrumbLink as={Link} to="/dishes">
             Browse Dishes
           </BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbItem isCurrentPage>
+        <BreadcrumbItem isCurrentPage color="copper.600" fontWeight="bold">
           <BreadcrumbLink>Add New Dish</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
@@ -122,7 +122,7 @@ export default () => {
               aspect={1.5}
             />
           </SimpleGrid>
-          <Button type="submit" variant="solid">
+          <Button type="submit" variant="solid" colorScheme="almond">
             Add Dish
           </Button>
         </form>

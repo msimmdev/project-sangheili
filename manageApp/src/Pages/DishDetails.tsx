@@ -69,13 +69,13 @@ export default () => {
   } else if (typeof dish !== "undefined") {
     content = (
       <>
-        <Breadcrumb>
-          <BreadcrumbItem>
+        <Breadcrumb padding="0.375rem">
+          <BreadcrumbItem color="almond.600">
             <BreadcrumbLink as={Link} to="/dishes">
               Browse Dishes
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
+          <BreadcrumbItem isCurrentPage color="copper.600" fontWeight="bold">
             <BreadcrumbLink>{dish.name}</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>

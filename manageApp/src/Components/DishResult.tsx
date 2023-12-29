@@ -86,7 +86,7 @@ export default ({
 
   if (layout === "vertical") {
     content = (
-      <Card>
+      <Card bg="mint.50">
         {header}
         <CardBody>
           {img}
@@ -96,7 +96,7 @@ export default ({
     );
   } else if (layout === "horizontal") {
     content = (
-      <Card direction="row">
+      <Card direction="row" bg="mint.50">
         {img}
         <Stack width="100%">
           {header}

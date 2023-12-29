@@ -8,9 +8,20 @@ import {
   Spacer,
   ButtonGroup,
   Center,
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  PopoverBody,
+  Input,
+  IconButton,
+  Stack,
 } from "@chakra-ui/react";
 import { DbId, Dish } from "@msimmdev/project-sangheili-types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "react-oidc-context";
 import DishResult from "./DishResult";
 import { Link } from "react-router-dom";
@@ -29,25 +40,31 @@ export default ({
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dishList, setDishList] = useState<(Dish & DbId)[]>();
+  const [search, setSearch] = useState<string>("");
   const [error, setError] = useState<Error>();
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const offset = (page - 1) * perPage;
-    let queryFilter = "";
+    const useQueryFilter = new URLSearchParams({
+      offset: offset.toString(),
+      limit: perPage.toString(),
+    });
     if (filter === "owned") {
-      queryFilter = "&owner[$eq]=$me";
+      useQueryFilter.append("owner[$eq]", "$me");
     } else if (filter === "shared") {
-      queryFilter = "&shared[$eq]=$me";
+      useQueryFilter.append("shared[$eq]", "$me");
     }
-    fetch(
-      `http://localhost:3100/dish?offset=${offset}&limit=${perPage}` +
-        queryFilter,
-      {
-        headers: {
-          Authorization: "Bearer " + auth.user?.access_token,
-        },
-      }
-    )
+
+    if (search !== "") {
+      useQueryFilter.append("name[$contains]", search);
+    }
+
+    fetch("http://localhost:3100/dish?" + useQueryFilter.toString(), {
+      headers: {
+        Authorization: "Bearer " + auth.user?.access_token,
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           console.error("Invalid response", response);
@@ -64,7 +81,7 @@ export default ({
         setError(error);
         console.error(error);
       });
-  }, [page, perPage]);
+  }, [page, perPage, search]);
 
   let content;
   if (isLoading) {
@@ -78,6 +95,8 @@ export default ({
         to={`/dishes/${tab}/${perPage}/${page - 1}`}
         isDisabled={page === 1}
         leftIcon={<span className="material-symbols-outlined">arrow_back</span>}
+        colorScheme="almond"
+        variant="outline"
       >
         Prev
       </Button>
@@ -91,6 +110,8 @@ export default ({
         rightIcon={
           <span className="material-symbols-outlined">arrow_forward</span>
         }
+        colorScheme="almond"
+        variant="outline"
       >
         Next
       </Button>
@@ -101,9 +122,58 @@ export default ({
         as={Link}
         to="/dishes/add"
         leftIcon={<span className="material-symbols-outlined">add</span>}
+        colorScheme="almond"
       >
         Add New Dish
       </Button>
+    );
+
+    const filter = (
+      <Popover initialFocusRef={searchRef}>
+        {({ isOpen }) => (
+          <>
+            <PopoverTrigger>
+              <Button
+                leftIcon={
+                  <span className="material-symbols-outlined">search</span>
+                }
+                isActive={isOpen || search !== ""}
+                colorScheme="almond"
+                variant="outline"
+              >
+                Search
+              </Button>
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverHeader>Search</PopoverHeader>
+                <PopoverBody>
+                  <Stack direction="row">
+                    <Input
+                      value={search}
+                      onChange={(event) => setSearch(event.target.value)}
+                      ref={searchRef}
+                    />
+                    <IconButton
+                      icon={
+                        <span className="material-symbols-outlined">
+                          cancel
+                        </span>
+                      }
+                      aria-label="Clear"
+                      colorScheme="almond"
+                      variant="ghost"
+                      onClick={() => setSearch("")}
+                    />
+                  </Stack>
+                </PopoverBody>
+              </PopoverContent>
+            </Portal>
+          </>
+        )}
+      </Popover>
     );
 
     const resultHeader = (
@@ -111,6 +181,7 @@ export default ({
         <ButtonGroup>
           {prevButton}
           {nextButton}
+          {filter}
         </ButtonGroup>
         <Spacer />
         {addButton}
@@ -128,7 +199,7 @@ export default ({
       const dishDisplay: JSX.Element[] = [];
       for (const dish of dishList) {
         dishDisplay.push(
-          <WrapItem maxWidth={300}>
+          <WrapItem maxWidth={300} key={dish.id}>
             <DishResult
               dish={dish}
               layout="vertical"

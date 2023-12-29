@@ -7,7 +7,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #fafafa;
+  background-color: #f1f7ee;
 }
 
 main {
@@ -25,7 +25,7 @@ main {
 }
 
 .header-bar {
-  background-color: #ffffff;
+  background-color: #f5fffa;
   border-bottom: 1px solid #d5d5db;
   height: 4rem;
 }
@@ -39,7 +39,7 @@ header {
 }
 
 .footer-bar {
-  background-color: #222222;
+  background-color: #a54d41;
   color: #ffffff;
   min-height: 4rem;
 }

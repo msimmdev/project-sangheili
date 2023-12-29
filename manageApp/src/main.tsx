@@ -7,6 +7,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import routes from "./routes";
 import App from "./App.tsx";
 import "./index.css";
+import theme from "./theme.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       scope="openid https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/Dishes.ReadWrite"
       onSigninCallback={onSigninCallback}
     >
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <RouterProvider router={router} />
       </ChakraProvider>
     </AuthProvider>

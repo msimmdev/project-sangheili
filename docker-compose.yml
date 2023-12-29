@@ -40,6 +40,7 @@ services:
       VITE_AUTH_REDIRECT: http://localhost:5173/
       VITE_CRUD_API_URL: http://localhost:3100
       VITE_UPLOAD_BASE_URL: http://127.0.0.1:10000/devstoreaccount1
+      VITE_POST_LOGOUT_REDIRECT: http://localhost:3000/
     volumes:
       - ./:/home/node/devapp
     expose:
