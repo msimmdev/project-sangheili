@@ -1,4 +1,4 @@
-export default () => (
+const search = () => (
   <div className="header-search">
     <form
       action="/search"
@@ -14,3 +14,5 @@ export default () => (
     </form>
   </div>
 );
+
+export default search;

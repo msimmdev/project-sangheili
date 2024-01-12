@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 
-export default () => (
+const Title = () => (
   <div className="header-title">
     <Link to="/">Project Sangheili</Link>
   </div>
 );
+
+export default Title;

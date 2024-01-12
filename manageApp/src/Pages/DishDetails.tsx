@@ -11,7 +11,7 @@ import { Link, useParams } from "react-router-dom";
 import { DbId, Dish } from "@msimmdev/project-sangheili-types";
 import DishResult from "../Components/DishResult";
 
-export default () => {
+const DishDetails = () => {
   const { dishId } = useParams();
   const auth = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,7 +55,7 @@ export default () => {
         setError(error);
         console.error(error);
       });
-  }, []);
+  }, [dishId, auth.user?.access_token]);
 
   if (typeof dishId === "undefined") {
     return <>ERROR</>;
@@ -95,3 +95,5 @@ export default () => {
 
   return <Box>{content}</Box>;
 };
+
+export default DishDetails;

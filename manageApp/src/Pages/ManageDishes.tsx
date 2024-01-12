@@ -12,7 +12,7 @@ import {
 import DishResultList from "../Components/DishResultList";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default () => {
+const ManageDishes = () => {
   const params = useParams();
   const navigate = useNavigate();
 
@@ -72,3 +72,5 @@ export default () => {
     </>
   );
 };
+
+export default ManageDishes;

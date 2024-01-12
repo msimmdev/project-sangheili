@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-export default ({
+const InlineEdit = ({
   defaultValue,
   onSubmit,
 }: {
@@ -22,7 +22,7 @@ export default ({
     if (isEditing) {
       setTextValue(currentValue);
     }
-  }, [isEditing]);
+  }, [isEditing, currentValue]);
 
   if (isEditing) {
     return (
@@ -56,3 +56,5 @@ export default ({
     return <Text onClick={() => setIsEditing.on()}>{currentValue}</Text>;
   }
 };
+
+export default InlineEdit;

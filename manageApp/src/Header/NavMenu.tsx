@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-export default () => (
+const NavMenu = () => (
   <Wrap justify="right" flexGrow={1} marginRight={5}>
     <WrapItem>
       <Menu>
@@ -35,3 +35,5 @@ export default () => (
     </WrapItem>
   </Wrap>
 );
+
+export default NavMenu;

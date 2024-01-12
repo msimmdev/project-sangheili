@@ -15,17 +15,15 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "react-oidc-context";
 import { Dish } from "@msimmdev/project-sangheili-types";
-import ImageUploadControl, {
-  ImageUploadData,
-  uploadImage,
-} from "../Shared/ImageUploadControl";
+import ImageUploadControl from "../Shared/ImageUploadControl";
+import { uploadImage, ImageUploadData } from "../Shared/UploadImage";
 import { Link, useNavigate } from "react-router-dom";
 
 const api_url = import.meta.env.VITE_CRUD_API_URL;
 
 type FormData = Dish & { mainImageFile: ImageUploadData };
 
-export default () => {
+const AddDish = () => {
   const {
     register,
     handleSubmit,
@@ -130,3 +128,5 @@ export default () => {
     </>
   );
 };
+
+export default AddDish;

@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "react-oidc-context";
 
-export default () => {
+const UserProfile = () => {
   const auth = useAuth();
   return (
     <Menu>
@@ -34,3 +34,5 @@ export default () => {
     </Menu>
   );
 };
+
+export default UserProfile;

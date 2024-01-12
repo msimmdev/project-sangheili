@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { Dish, DbId } from "@msimmdev/project-sangheili-types";
 import InlineEdit from "./InlineEdit";
 
-export default ({
+const DishResult = ({
   dish,
   layout,
   editControl,
@@ -115,3 +115,5 @@ export default ({
 
   return containedContent;
 };
+
+export default DishResult;

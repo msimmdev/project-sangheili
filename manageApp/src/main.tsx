@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { User } from "oidc-client-ts";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AuthProvider } from "react-oidc-context";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -17,7 +16,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const onSigninCallback = (_user: User | void): void => {
+const onSigninCallback = (): void => {
   window.history.replaceState({}, document.title, window.location.pathname);
 };
 

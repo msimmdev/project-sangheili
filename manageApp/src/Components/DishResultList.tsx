@@ -26,7 +26,7 @@ import { useAuth } from "react-oidc-context";
 import DishResult from "./DishResult";
 import { Link } from "react-router-dom";
 
-export default ({
+const DishResultList = ({
   tab,
   page,
   perPage,
@@ -81,7 +81,7 @@ export default ({
         setError(error);
         console.error(error);
       });
-  }, [page, perPage, search]);
+  }, [page, perPage, search, filter, auth.user?.access_token]);
 
   let content;
   if (isLoading) {
@@ -229,3 +229,5 @@ export default ({
 
   return <Box>{content}</Box>;
 };
+
+export default DishResultList;
