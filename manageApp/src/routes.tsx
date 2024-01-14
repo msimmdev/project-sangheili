@@ -1,4 +1,4 @@
-import { AddDish, DishDetails, ManageDishes } from "./Pages";
+import { AddDish, DishDetails, ManageDishes, EditRecipe } from "./Pages";
 
 export default [
   {
@@ -12,5 +12,9 @@ export default [
   {
     path: "dish/:dishId",
     element: <DishDetails />,
+  },
+  {
+    path: "recipe/:recipeId",
+    element: <EditRecipe />,
   },
 ];

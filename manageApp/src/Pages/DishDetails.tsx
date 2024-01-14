@@ -10,6 +10,7 @@ import { useAuth } from "react-oidc-context";
 import { Link, useParams } from "react-router-dom";
 import { DbId, Dish } from "@msimmdev/project-sangheili-types";
 import DishResult from "../Components/DishResult";
+import CreateRecipeButton from "../Components/CreateRecipeButton";
 
 const DishDetails = () => {
   const { dishId } = useParams();
@@ -89,6 +90,7 @@ const DishDetails = () => {
             await updateDish(dishId, updateData)
           }
         />
+        <CreateRecipeButton />
       </>
     );
   }

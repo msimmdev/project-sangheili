@@ -51,6 +51,7 @@ const ImageUploadControl = ({
     } else {
       setActiveImageUrl(URL.createObjectURL(activeImage));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeImage]);
 
   useEffect(() => {

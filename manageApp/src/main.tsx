@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       authority={import.meta.env.VITE_AUTH_AUTHORITY}
       client_id={import.meta.env.VITE_AUTH_CLIENTID}
       redirect_uri={import.meta.env.VITE_AUTH_REDIRECT}
-      scope="openid https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/Dishes.ReadWrite"
+      scope="openid https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/Dishes.ReadWrite https://sangheili.onmicrosoft.com/76dcec81-27ef-4b4b-ad4a-e722a65963b5/Recipes.ReadWrite"
       onSigninCallback={onSigninCallback}
     >
       <ChakraProvider theme={theme}>
