@@ -6,6 +6,7 @@ dotenv.config({ path: `.env.local`, override: true });
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import dishRouter from "./routes/dish";
+import recipeRouter from "./routes/recipe";
 import uploadSessionRouter from "./routes/uploadSession";
 import oidcVerifyToken from "./middleware/oidc-verify-token";
 import tokenScopes from "./middleware/token-scopes";
@@ -28,6 +29,7 @@ if (process.env.AUTH_AUTOMATION_MODE === "true") {
 app.use(express.json());
 
 app.use("/dish", dishRouter);
+app.use("/recipe", recipeRouter);
 app.use("/upload-session", uploadSessionRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
