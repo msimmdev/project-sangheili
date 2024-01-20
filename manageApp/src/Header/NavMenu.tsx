@@ -12,6 +12,11 @@ import { Link } from "react-router-dom";
 const NavMenu = () => (
   <Wrap justify="right" flexGrow={1} marginRight={5}>
     <WrapItem>
+      <Button as={Link} to="/recipes" colorScheme="copper" variant="outline">
+        Recipes
+      </Button>
+    </WrapItem>
+    <WrapItem>
       <Menu>
         <MenuButton
           as={Button}
