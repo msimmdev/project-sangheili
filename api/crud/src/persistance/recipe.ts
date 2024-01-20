@@ -9,10 +9,11 @@ import {
 } from "@msimmdev/project-sangheili-types";
 import { recipes, DbRecipe } from "../db";
 import { ObjectId, Filter } from "mongodb";
+import { RecipeFilter } from "../filters/get-recipes-filter";
 
 async function getRecipes(
   accessRestrictions: boolean,
-  queryFilter: any,
+  queryFilter: RecipeFilter,
   userId?: string
 ): Promise<DbRecipe[]> {
   const recipeResult: DbRecipe[] = [];

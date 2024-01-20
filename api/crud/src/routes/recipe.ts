@@ -10,6 +10,7 @@ import {
 import verifyAccess from "../util/verify-access";
 import { RecipeSchema, OwnedResource } from "@msimmdev/project-sangheili-types";
 import processImage from "../util/process-image";
+import { RecipeFilterSchema } from "../filters/get-recipes-filter";
 
 const router = express.Router();
 
@@ -19,9 +20,14 @@ router.get("/", async (req, res, next) => {
       return res.sendStatus(403);
     }
 
+    const queryParseResult = await RecipeFilterSchema.safeParseAsync(req.query);
+    if (!queryParseResult.success) {
+      return res.status(400).json(queryParseResult.error);
+    }
+
     const recipeResult = await getRecipes(
       !req.user?.roles.includes("SuperAdmin") ?? true,
-      {},
+      queryParseResult.data,
       req.user?.userId
     );
 
